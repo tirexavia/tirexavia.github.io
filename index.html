@@ -684,6 +684,31 @@ body.dirmode #dnav{mix-blend-mode:normal}
   html,body,#caseView,.bview,.pscroll,.phones,.gal{scrollbar-width:none}
   html::-webkit-scrollbar,body::-webkit-scrollbar,#caseView::-webkit-scrollbar,.bview::-webkit-scrollbar,.pscroll::-webkit-scrollbar,.phones::-webkit-scrollbar{display:none;width:0;height:0}
 }
+
+/* DEKA prototype */
+.dkg{display:flex;flex-wrap:wrap;gap:8px}
+.dkg .pill{height:48px;padding:0 24px;font-size:15px}
+.dkg .pill.on{--kf:var(--cream);--kd:#8E8999;--kt:var(--bg)}
+.dkp{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 24px}
+.dkp button{height:32px;padding:0 12px;font-family:var(--mono);font-size:13px;color:var(--cream);opacity:.6;background:rgba(241,238,232,.06);clip-path:var(--st4);transition:opacity .2s,background .2s}
+.dkp button:hover{opacity:1}
+.dkp button.on{opacity:1;background:var(--ca,var(--acc));color:var(--cak,var(--bg))}
+#dkView{height:min(72vh,760px)}
+#dkView .pin{position:relative}
+#dkView .pin img{width:100%;display:block}
+.dks{position:absolute;background:transparent;border:0;padding:0;transition:box-shadow .2s,background .2s}
+.dks:hover{box-shadow:0 0 0 2px rgba(255,90,70,.9);background:rgba(255,90,70,.08)}
+.dkds .bview{height:min(72vh,760px)}
+.dkds .bview img{width:100%;display:block}
+.dkfs{display:grid;gap:64px}
+.dkf{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:48px;align-items:center}
+.dkf:nth-child(even) img{order:2}
+.dkf img{width:100%;display:block;clip-path:var(--st8)}
+.dkf h3{font-size:clamp(20px,1.6vw,28px);font-weight:600;letter-spacing:-.01em;margin-bottom:16px}
+.dkf h3::before{content:'';display:inline-block;width:12px;height:12px;background:var(--ca,var(--acc));margin-right:12px;vertical-align:2px}
+.dkf p{font-size:17px;line-height:1.55;opacity:.72}
+.dke img{width:100%;display:block;clip-path:var(--st8)}
+@media (max-width:900px){.dkf{grid-template-columns:1fr;gap:24px}.dkf:nth-child(even) img{order:0}#dkView{height:60vh}}
 </style>
 </head>
 <body>
@@ -812,6 +837,8 @@ const dir = k => DIRS.find(d => d.k === k);
 /* real works - texts copied verbatim from tirexavia.netlify.app */
 const W = 'w/';
 const CASES = [
+ {id:'deka', d:'web', y:2026, t:'ДЕКА', spec:'Веб · интернет-магазин', sub:'Интернет-магазин редких и лимитированных пластинок.', cover:W + 'deka/home.webp', kind:'deka',
+  facts:[['Проект', 'Интернет-магазин винила ДЕКА'], ['Роль', 'UX/UI, айдентика, дизайн-система'], ['Инструменты', 'Figma'], ['Объём', '21 экран и дизайн-система']]},
  {id:'aura', d:'web', y:2026, t:'AURA Residence', spec:'Веб · лендинг', cover:W + 'aura/a0.webp', kind:'case',
   sub:'Лендинг жилого комплекса.',
   facts:[['Клиент', 'ЖК бизнес-класса AURA Residence'], ['Роль', 'UX/UI-дизайн, дизайн-система'], ['Инструменты', 'Figma'], ['Год', '2026']],
@@ -863,6 +890,7 @@ const EN = {
   story:{task:'The brief was a brand for an everyday coffee shop: friendly, memorable at a glance, and just as strong on a small cup as on the sign above the door.',
    idea:'Coffee here is not a ritual, it is a small joy in an ordinary day. Hence soft rounded letters, playful blobs instead of strict graphics, and a heroine simply enjoying her cup.',
    did:[['Logo', 'A bold rounded wordmark plus a separate M mark. It reads from far away, so it became the shop sign.'], ['Shapes and colour', 'A system of blobs in deep blue and cream. Any new item can be built from these parts without starting from scratch.'], ['Packaging', 'Each roast got its own colour and shape: Sweet Balance light, Bright Blend blue, Dark Mood dark. You can pick a taste by the bag without reading the small print.'], ['Illustration', 'I drew a heroine with a cup. She appears on the cup, the tote bag and the window and makes the brand warmer and more human.']]}},
+ deka:{t:'DEKA', spec:'Web · online store', sub:'An online store for rare and limited vinyl.', facts:[['Project', 'DEKA vinyl online store'], ['Role', 'UX/UI, identity, design system'], ['Tools', 'Figma'], ['Scope', '21 screens and a design system']]},
  aura:{spec:'Web · landing page', sub:'A landing page for a residential complex.',
   facts:[['Client', 'AURA Residence, a premium residential complex'], ['Role', 'UX/UI design, design system'], ['Tools', 'Figma'], ['Year', '2026']],
   caps:['Key facts', 'Apartments', 'Location', 'Enquiry'],
@@ -1230,11 +1258,12 @@ function renderCase(c) {
   $('#dnav')._mark && $('#dnav')._mark();
   const L = T[lang];
   const head = `<a class="pill ghost back" href="${lastDir ? '#dir-' + lastDir : '#work'}">${lastDir ? (lang === 'en' ? '← ' + dir(lastDir).name.en : '← ' + dir(lastDir).name.ru) : L.back}</a>
-    <div class="mono label">${c.kind === 'case' ? (lang === 'en' ? 'Case · ' : 'Кейс · ') : ''}${c.spec}</div>
+    <div class="mono label">${c.kind === 'case' || c.kind === 'deka' ? (lang === 'en' ? 'Case · ' : 'Кейс · ') : ''}${c.spec}</div>
     <h1>${c.t}<canvas class="tbot" data-id="title"></canvas></h1>${c.sub ? `<p class="csub">${c.sub}</p>` : ''}
     ${c.facts ? `<dl class="facts">${c.facts.map(f => `<div><dt class="mono">${f[0]}</dt><dd>${f[1]}</dd></div>`).join('')}</dl>` : ''}`;
   let body = '';
-  if (c.kind === 'case') {
+  if (c.kind === 'deka') body = renderDeka();
+  else if (c.kind === 'case') {
     const s = c.cs, sec = (n, b) => `<section class="ch" id="ch${n}"><div class="mono chn">${L.CH[n]}</div><div class="chb">${b}</div></section>`;
     const hint = lang === 'en' ? 'scroll inside to see the whole design' : 'листай внутри, чтобы посмотреть весь дизайн';
     const cover = c.id === 'horo'
@@ -1265,6 +1294,7 @@ function renderCase(c) {
   </div>`;
   $('#caseDeco .wm').textContent = c.t.toUpperCase(); $('#caseDeco').style.setProperty('--dc', dir(c.d).c);
   if (c.id === 'iso') show3D();
+  if (c.kind === 'deka') dkGo('home');
   $$('.toc a', CV).forEach(a => a.onclick = e => { e.preventDefault(); $('#ch' + a.dataset.n, CV).scrollIntoView({behavior:RM ? 'auto' : 'smooth'}); });
 }
 function flip(d, label, mid, done) {
@@ -1921,7 +1951,7 @@ function renderDir(c) {
     <footer class="mono" style="padding-inline:0;margin-top:96px"><span>© 2026 tirexavia</span><a href="#">${lang === 'en' ? 'Home' : 'На главную'}</a></footer></div>`;
   const pv = $('#caseIn .dprev'), go = $('#caseIn .dgo');
   const show = i => { const w = list[i];
-    pv.href = '#' + w.id; go.textContent = (w.kind === 'case' ? L.view : L.viewp) + ' →';
+    pv.href = '#' + w.id; go.textContent = (w.kind === 'case' || w.kind === 'deka' ? L.view : L.viewp) + ' →';
     pv.innerHTML = w.phones ? `<div class="dphones">${w.phones.map(x => `<img src="${x}" alt="" draggable="false">`).join('')}</div>` : w.video ? `<video src="${w.video}" poster="${w.cover}" autoplay muted loop playsinline></video>` : `<img src="${w.cover}" alt="${W8(w).t}" draggable="false">`;
     $$('#caseIn .dtab').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
     gsap.fromTo(pv.firstChild, {opacity:0, y:16}, {opacity:1, y:0, duration:.5, ease:'power3.out'}); };
@@ -1939,6 +1969,100 @@ CV.addEventListener('wheel', e => { const s = e.target.closest('.pscroll, .bview
   const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1), max = s.scrollHeight - s.clientHeight;
   const inner = clamp(dy, -s.scrollTop, max - s.scrollTop); e.preventDefault();
   s.scrollTop += inner; CV.scrollTop += dy - inner; }, {passive:false});
+/* ---------------- DEKA: vinyl shop case with a clickable prototype ---------------- */
+const DKH = [[64, 20, 124, 40, 'home'], [476, 20, 70, 40, 'catalog'], [570, 20, 62, 40, 'drops'], [656, 20, 62, 40, 'genres'], [743, 20, 54, 40, 'about'], [822, 20, 80, 40, 'delivery'],
+  [1196, 20, 32, 40, 'search'], [1244, 20, 32, 40, 'fav'], [1292, 20, 32, 40, 'cart'], [1340, 20, 32, 40, 'orders']];
+const DKP = {
+  home:[4778, 1, [[536, 448, 210, 48, 'drops'], [754, 448, 168, 50, 'catalog'], [568, 664, 304, 304, 'product']]],
+  catalog:[2621, 1, [[1053, 922, 299, 299, 'product']]],
+  product:[2758, 1, [[695, 503, 538, 44, 'cart']]],
+  drops:[2803, 1, []], genres:[1701, 1, [[512, 744, 416, 400, 'rock']]], rock:[2465, 1, []],
+  search:[900, 0, [[1326, 56, 32, 30, 'home'], [1226, 148, 150, 24, 'catalog']]], notfound:[1811, 1, []],
+  cart:[2022, 1, [[992, 621, 352, 48, 'checkout']]], cartempty:[1785, 1, [[500, 528, 237, 48, 'catalog'], [745, 528, 195, 50, 'drops']]],
+  checkout:[1156, 0, [[64, 20, 124, 40, 'home'], [447, 26, 90, 28, 'cart'], [992, 637, 352, 48, 'done']]],
+  done:[1287, 1, [[489, 680, 222, 48, 'order'], [720, 680, 231, 50, 'catalog']]],
+  login:[900, 0, [[64, 44, 124, 40, 'home'], [864, 555, 432, 48, 'orders']]],
+  orders:[1443, 1, [[1232, 392, 120, 36, 'order'], [64, 264, 256, 40, 'fav']]],
+  order:[1477, 1, [[392, 136, 100, 22, 'orders'], [64, 216, 256, 40, 'orders'], [64, 264, 256, 40, 'fav']]],
+  fav:[1837, 1, []], about:[3276, 1, [[522, 2601, 220, 46, 'drops']]], delivery:[1926, 1, []],
+  '404':[900, 1, [[555, 663, 181, 48, 'home'], [745, 663, 140, 50, 'catalog']]],
+};
+const DKG = {ru:[['Витрина', [['home', 'Главная'], ['catalog', 'Каталог'], ['product', 'Карточка'], ['drops', 'Дропы'], ['genres', 'Жанры'], ['rock', 'Жанр']]],
+  ['Покупка', [['search', 'Поиск'], ['notfound', 'Ничего не найдено'], ['cart', 'Корзина'], ['cartempty', 'Пустая корзина'], ['checkout', 'Оформление'], ['done', 'Заказ принят']]],
+  ['Кабинет', [['login', 'Вход'], ['orders', 'Мои заказы'], ['order', 'Заказ'], ['fav', 'Избранное']]],
+  ['Инфо', [['about', 'О нас'], ['delivery', 'Доставка'], ['404', '404']]]],
+ en:[['Storefront', [['home', 'Home'], ['catalog', 'Catalogue'], ['product', 'Product'], ['drops', 'Drops'], ['genres', 'Genres'], ['rock', 'Genre']]],
+  ['Purchase', [['search', 'Search'], ['notfound', 'No results'], ['cart', 'Cart'], ['cartempty', 'Empty cart'], ['checkout', 'Checkout'], ['done', 'Order placed']]],
+  ['Account', [['login', 'Sign in'], ['orders', 'My orders'], ['order', 'Order'], ['fav', 'Favourites']]],
+  ['Info', [['about', 'About'], ['delivery', 'Delivery'], ['404', '404']]]]};
+const dkGroupOf = k => DKG.ru.findIndex(g => g[1].some(p => p[0] === k));
+const dkScreen = k => { const [H, nav, hs] = DKP[k];
+  return `<div class="pin"><img src="w/deka/${k}.webp" alt="" draggable="false">${[...(nav ? DKH : []), ...hs].map(([x, y, w, h, to]) => `<button class="dks" data-to="${to}" style="left:${x / 14.4}%;top:${y / H * 100}%;width:${w / 14.4}%;height:${h / H * 100}%" aria-label="${to}"></button>`).join('')}</div>`; };
+function dkGo(k) {
+  const v = $('#dkView', CV); if (!v) return; const gi = dkGroupOf(k), G = DKG[lang] || DKG.ru;
+  v.innerHTML = dkScreen(k); v.scrollTop = 0;
+  $$('.dkg button', CV).forEach((b, i) => b.classList.toggle('on', i === gi));
+  $('.dkp', CV).innerHTML = G[gi][1].map(([id, n]) => `<button data-k="${id}" class="${id === k ? 'on' : ''}">${n}</button>`).join('');
+  $('.dkurl', CV).textContent = 'deka.shop/' + (k === 'home' ? '' : k);
+  gsap.fromTo(v.firstChild, {opacity:0}, {opacity:1, duration:.3});
+}
+CV.addEventListener('click', e => {
+  const s = e.target.closest('.dks'); if (s) { dkGo(s.dataset.to); return; }
+  const g = e.target.closest('.dkg button'); if (g) { dkGo((DKG.ru)[+g.dataset.g][1][0][0]); return; }
+  const p = e.target.closest('.dkp button'); if (p) dkGo(p.dataset.k);
+});
+const DKT = {
+ ru:{ch:['Задача', 'Анализ', 'Концепция', 'Решение', 'Итог'], ds:'Дизайн-система', keysH:'Самые важные решения', empty:'Пустые состояния',
+  task:'ДЕКА - магазин редких и лимитированных пластинок в Петербурге. Задача была собрать ему интернет-магазин целиком: айдентику, витрину, путь покупки, личный кабинет и дизайн-систему, на которой всё это держится.',
+  tri:[['Продукт', 'Интернет-магазин винила: каталог, лимитированные дропы и самовывоз с Рубинштейна.'], ['Для кого', 'Коллекционеры, которые охотятся за конкретным изданием, и те, кто только собирает первую полку.'], ['Проблема', 'Обычный магазин показывает пластинку как товар: обложка и цена. Коллекционеру важно другое: пресс, год, состояние конверта и звук. Без этого дорогую пластинку онлайн не купят.']],
+  aud:'Перед дизайном я разобрала, что важно человеку, который покупает пластинку онлайн, и что его останавливает на полпути.',
+  find:[['Хочется услышать', 'Покупатель хочет понять звук и состояние до покупки, а не после.'], ['Лимитки уходят быстро', 'Тираж в 200 копий может разойтись за сутки. О дропе нужно знать заранее и не терять время на кассе.'], ['Фильтры коллекционера', 'Ищут не просто «рок», а по году, формату и состоянию: Mint, VG+.'], ['Доверие', 'Дорогую пластинку покупают, когда понятно, кто её проверил и что будет при браке.']],
+  idea:'Хотелось, чтобы сайт ощущался как вечер в магазине пластинок: тёмный зал, тёплый свет и яркий конверт, который сразу цепляет взгляд. Поэтому интерфейс почти чёрный и спокойный, а цвет дают обложки и один коралловый акцент, как «яблоко» на пластинке.',
+  dsc:[['Айдентика', 'Знак - пластинка, у которой тонарм превращается в ноту. Он же живёт в логотипе, на экране входа и на 404.'], ['Цвет', 'Тёмная основа, коралловый акцент для действий и свой цвет у каждого жанра, чтобы ориентироваться в каталоге по точке.'], ['Компоненты', 'Карточка товара, кнопки, чипсы, бейджи и поля собраны в библиотеку. Все 21 экран собраны из одних и тех же деталей.']],
+  feat:[['d_player', 'Пластинку можно послушать', 'Отрывок трека включается прямо в карточке. Это закрывает главный вопрос перед покупкой: а как она звучит.'],
+   ['d_drop', 'Дроп с таймером', 'Следующий дроп виден заранее: таймер, тираж, цена и лимит в одни руки. Напоминание приходит письмом за час до старта.'],
+   ['d_filters', 'Фильтры как у коллекционера', 'Год, формат и состояние по шкале Goldmine вынесены в фильтры. Бейджи «лимит», «б/у VG+», «с автографом» видно прямо на обложке.'],
+   ['d_cart', 'Корзина подсказывает', 'Полоса показывает, сколько осталось до бесплатной доставки, а итог и промокод всегда под рукой справа.'],
+   ['d_track', 'Где мой заказ', 'В кабинете видно, на каком этапе пластинка. Отдельный шаг «собран и прослушан» напоминает, что её проверили перед отправкой.'],
+   ['d_search', 'Быстрый поиск', 'Совпадения подсвечиваются, рядом недавние запросы и сразу цена, чтобы не открывать каждую пластинку.']],
+  emptyT:'Ни один экран не заканчивается тупиком: вместо пустоты предлагаю похожие пластинки, дропы или каталог, а 404 шутит в тон бренда.',
+  res:'Получился магазин, где путь от главной до оплаты занимает несколько шагов, а коллекционер видит всё важное ещё до покупки. И дизайн-система, на которой его можно спокойно растить дальше.',
+  met:[['21', 'экран'], ['4', 'сценария: витрина, покупка, кабинет, инфо'], ['1', 'дизайн-система на всё']],
+  keys:['Дала пластинке звучать прямо в карточке товара.', 'Вынесла год, формат и состояние в фильтры и бейджи, как привыкли коллекционеры.', 'Сделала дропы отдельным разделом с таймером и напоминанием.', 'Довела каждый пустой экран до следующего действия.']},
+ en:{ch:['Task', 'Research', 'Concept', 'Solution', 'Result'], ds:'Design system', keysH:'Key decisions', empty:'Empty states',
+  task:'DEKA is a shop of rare and limited vinyl in Saint Petersburg. The task was to build the whole online store: identity, storefront, checkout flow, account and the design system behind it all.',
+  tri:[['Product', 'An online vinyl store: catalogue, limited drops and pickup on Rubinsteina street.'], ['Audience', 'Collectors hunting for a specific pressing, and people building their very first shelf.'], ['Problem', 'A regular shop shows a record as a product: cover and price. A collector needs more: pressing, year, sleeve condition and sound. Without that nobody buys an expensive record online.']],
+  aud:'Before designing I worked out what matters to someone buying a record online, and what stops them halfway.',
+  find:[['They want to hear it', 'Buyers want to know the sound and condition before paying, not after.'], ['Limited runs sell fast', 'A run of 200 copies can be gone in a day. People need to know about a drop early and not lose time at checkout.'], ['Collector filters', 'They search by year, format and grade, Mint or VG+, not just by genre.'], ['Trust', 'People buy an expensive record when it is clear who checked it and what happens if it is faulty.']],
+  idea:'I wanted the site to feel like an evening in a record shop: a dark room, warm light and a bright sleeve that grabs your eye. So the interface is almost black and calm, and colour comes from the covers and a single coral accent, like the label on a record.',
+  dsc:[['Identity', 'The mark is a record whose tonearm turns into a note. It lives in the logo, on the sign-in screen and on the 404.'], ['Colour', 'A dark base, coral for actions and a colour per genre, so you can find your way in the catalogue by a dot.'], ['Components', 'Product card, buttons, chips, badges and fields are one library. All 21 screens are built from the same parts.']],
+  feat:[['d_player', 'You can listen first', 'A track preview plays right on the product page. It answers the main question before buying: how does it sound.'],
+   ['d_drop', 'Drops with a timer', 'The next drop is visible in advance: timer, run size, price and a one-per-person limit. A reminder email arrives an hour before.'],
+   ['d_filters', 'Collector filters', 'Year, format and Goldmine grade are filters. Badges like limited, used VG+ and signed sit right on the cover.'],
+   ['d_cart', 'A helpful cart', 'A bar shows how much is left until free delivery, and the total and promo code are always on the right.'],
+   ['d_track', 'Where is my order', 'The account shows the order stage. A separate "packed and listened to" step reminds that each record was checked.'],
+   ['d_search', 'Fast search', 'Matches are highlighted, recent queries sit nearby and prices show right away.']],
+  emptyT:'No screen is a dead end: instead of emptiness I offer similar records, drops or the catalogue, and the 404 jokes in the brand voice.',
+  res:'The result is a shop where the path from home to payment takes a few steps and a collector sees everything important before buying. Plus a design system that lets it grow calmly.',
+  met:[['21', 'screens'], ['4', 'flows: storefront, purchase, account, info'], ['1', 'design system for everything']],
+  keys:['Let the record play right on the product page.', 'Put year, format and grade into filters and badges, the way collectors are used to.', 'Gave drops their own section with a timer and a reminder.', 'Led every empty screen to a next step.']}};
+function renderDeka() {
+  const T2 = DKT[lang] || DKT.ru, G = DKG[lang] || DKG.ru, sec = (n, b) => `<section class="ch" id="ch${n}"><div class="mono chn">${T2.ch[n]}</div><div class="chb">${b}</div></section>`;
+  const proto = `<div class="dkproto"><div class="dkg">${G.map((g, i) => `<button class="pill ghost" data-g="${i}">${g[0]}</button>`).join('')}</div><div class="dkp"></div>
+    <div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="mono dkurl">deka.shop/</span></div><div class="bview" id="dkView" data-lenis-prevent></div></div></div>`;
+  const fig = ([img, h, p]) => `<div class="dkf"><img src="w/deka/${img}.webp" alt="${h}" loading="lazy" draggable="false"><div><h3>${h}</h3><p>${p}</p></div></div>`;
+  return `<div class="cover2">${proto}</div>
+    <nav class="toc mono">${T2.ch.map((h, n) => `<a href="#ch${n}" data-n="${n}">${h}</a>`).join('')}</nav>
+    ${sec(0, `<p class="big">${T2.task}</p><div class="tri">${T2.tri.map(x => `<div class="cardc"><span class="mono">${x[0]}</span><p>${x[1]}</p></div>`).join('')}</div>`)}
+    ${sec(1, `<p class="big">${T2.aud}</p><div class="quad">${T2.find.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>`)}
+    ${sec(2, `<p class="big">${T2.idea}</p><div class="tri">${T2.dsc.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>
+      <div class="mono label" style="margin-top:56px">${T2.ds}</div><div class="browser dkds"><div class="bview" data-lenis-prevent><img src="w/deka/ds.webp" alt="${T2.ds}" draggable="false"></div></div>`)}
+    ${sec(3, `<div class="dkfs">${T2.feat.map(fig).join('')}</div>
+      <div class="mono label" style="margin-top:56px">${T2.empty}</div><p class="big">${T2.emptyT}</p>
+      <div class="tri dke">${['d_empty1', 'd_empty2', 'd_404'].map(i => `<img src="w/deka/${i}.webp" alt="" loading="lazy" draggable="false">`).join('')}</div>`)}
+    ${sec(4, `<p class="big">${T2.res}</p><div class="sys" style="--c:3">${T2.met.map(m => `<div><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
+      <div class="mono label" style="margin-top:56px">${T2.keysH}</div><ol class="keys">${T2.keys.map(k => `<li>${k}</li>`).join('')}</ol>`)}`;
+}
 /* ---------------- boot ---------------- */
 function boot() {
   buildCases(); applyLang(lang);

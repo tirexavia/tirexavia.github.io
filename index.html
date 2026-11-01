@@ -534,6 +534,156 @@ body:not(.dirmode) #dnav{display:none}
 .dprev .dphones{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;gap:32px;padding:48px;background:#1A1828}
 .dprev .dphones img{position:static;width:auto;height:100%;max-width:30%;object-fit:contain;border-radius:24px}
 @media (max-width:700px){.dprev .dphones{gap:8px;padding:24px 16px}.dprev .dphones img{border-radius:8px}}
+/* case: shots one per row, uncropped, so nothing is cut and rows never misalign */
+.shots{grid-template-columns:1fr !important;gap:32px;margin-bottom:32px}
+.shots figure{margin:0}
+.shots figcaption{margin-top:16px}
+/* chapter menu scrolls with the page instead of covering the images */
+.toc{position:relative !important;top:auto !important}
+/* solid band under the fixed logo so scrolled text never runs into it */
+#caseView::before{content:'';position:sticky;top:0;display:block;height:88px;margin-bottom:-88px;background:linear-gradient(var(--bg) 64%,rgba(18,17,20,0));z-index:5;pointer-events:none}
+
+/* contact: pixel keycaps - chunky game buttons with a pressable 4px base */
+#contact .keys{gap:16px}
+.kc{--px:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px));
+  position:relative;display:inline-block;padding:0 0 8px;background:none;border:0;color:inherit;text-align:left}
+.kc::before{content:'';position:absolute;inset:8px 0 0;background:var(--dep);clip-path:var(--px)}
+.kf{position:relative;display:flex;align-items:center;gap:16px;height:80px;padding:0 32px 0 12px;background:var(--face);color:var(--fg);clip-path:var(--px);transition:transform .16s cubic-bezier(.3,1.6,.5,1),background .3s}
+.kc:hover .kf{transform:translateY(-4px)}
+.kc:active .kf{transform:translateY(8px);transition-duration:.06s}
+.kc:focus-visible{outline:2px dashed var(--cream);outline-offset:8px}
+.ki{display:grid;place-items:center;width:56px;height:56px;background:var(--tile);clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));flex-shrink:0}
+.ki svg{width:40px;height:40px;transition:transform .2s steps(2)}
+.kt{display:flex;flex-direction:column;gap:4px}
+.kt small{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+.kt b{font-family:'Pixelify Sans',var(--mono);font-weight:600;font-size:24px;line-height:32px;letter-spacing:.01em}
+.ka{font-size:24px;margin-left:8px;transition:transform .2s steps(2)}
+.kc.mail{--face:var(--cream);--fg:var(--bg);--dep:#8E8999;--tile:#DDD8E8}
+.kc.tg{--face:var(--acc);--fg:#fff;--dep:#3E2E9E;--tile:rgba(255,255,255,.16)}
+.kc.mail:hover .ki svg{transform:translateY(-4px)}
+.kc.tg:hover .ki svg,.kc.tg:hover .ka{transform:translate(4px,-4px)}
+.kc.mail.ok{--face:#B7F5A6;--dep:#4E9A40;--tile:rgba(16,16,18,.1)}
+.kc.mail.ok small{opacity:1}
+@media (max-width:700px){#contact .keys{flex-direction:column;align-items:stretch;width:100%}.kc{display:block}.kf{height:72px;padding-right:24px}.ki{width:48px;height:48px}.ki svg{width:32px;height:32px}.kt b{font-size:20px;line-height:24px}.ka{margin-left:auto}}
+
+/* keycaps, compact */
+.kc{padding:0 0 4px}
+.kc::before{inset:4px 0 0}
+.kf{height:56px;gap:12px;padding:0 24px 0 8px}
+.kc:hover .kf{transform:translateY(-2px)}
+.kc:active .kf{transform:translateY(4px)}
+.ki{width:40px;height:40px}
+.ki svg{width:24px;height:24px}
+.kt b{font-size:20px;line-height:24px}
+.ka{font-size:20px;margin-left:4px}
+.kc.mail:hover .ki svg{transform:translateY(-2px)}
+.kc.tg:hover .ki svg,.kc.tg:hover .ka{transform:translate(2px,-2px)}
+.kc.mail .kt b{min-width:12ch}
+@media (max-width:700px){.kf{height:56px;padding-right:16px}.ki{width:40px;height:40px}.ki svg{width:24px;height:24px}.kt b{font-size:18px}}
+.kc.mail .kt b{min-width:0}
+@media (max-width:700px){.kc.mail{width:auto !important}}
+
+/* ================= unified pixel system =================
+   rule: everything you press is a keycap; containers keep calm stepped corners */
+:root{
+  --st8:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px));
+  --st4:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+}
+/* keycap buttons, neutral: dark face + darker 4px base, cream on hover */
+.pill,.pill.ghost,.pill.solid{--kf:#2A2930;--kd:#060607;--kt:var(--cream);
+  border:0 !important;border-radius:0 !important;clip-path:var(--st8);color:var(--kt) !important;
+  background:linear-gradient(var(--kf) calc(100% - 4px),var(--kd) 0) !important;padding-bottom:4px;
+  transition:transform .16s cubic-bezier(.3,1.6,.5,1)}
+.pill.solid{--kf:var(--cream);--kd:#8E8999;--kt:var(--bg)}
+.pill:hover{--kf:var(--cream);--kd:#8E8999;--kt:var(--bg);transform:translateY(-2px)}
+.pill.solid:hover{--kf:#fff}
+.pill:active{transform:translateY(2px);background:var(--kf) !important;transition-duration:.06s}
+.pill:focus-visible{outline:2px dashed var(--cream);outline-offset:6px}
+.dcard .pill{height:44px}
+
+/* containers: stepped corners instead of soft radius */
+.dcard{border-radius:0 !important;border:0 !important;clip-path:var(--st8)}
+.dcard .dimmer{border-radius:0}
+.dcard .cov,.dimg,.dprev,.cover2 .wide,#caseView .cover,.next,.gl3,.browser,.gal img,.gal video,.shots img,.dprev .dphones img{border-radius:0 !important;clip-path:var(--st8)}
+.dimg,.dprev,.browser{border:0 !important}
+.cardc,.keys li{border-radius:0 !important;border:0 !important;clip-path:var(--st8)}
+.art .k{border-radius:0;clip-path:var(--st4)}
+.sw i{border-radius:0} .gd i{border-radius:0} .bbar i{border-radius:0;width:8px;height:8px}
+
+/* chapter menu and direction tabs */
+.toc{border-radius:0 !important;border:0 !important;clip-path:var(--st8);background:var(--bg2)}
+.toc a{border-radius:0;clip-path:var(--st4)}
+.dtab{border-radius:0 !important;border:0 !important;clip-path:var(--st8);height:72px;padding-bottom:12px;
+  --kf:#1E1D23;--kd:#060607;background:linear-gradient(var(--kf) calc(100% - 4px),var(--kd) 0);transition:transform .16s cubic-bezier(.3,1.6,.5,1)}
+.dtab:hover{transform:translateY(-2px);--kf:#2A2930}
+.dtab.on{--kf:var(--cream);--kd:#8E8999;color:var(--bg)}
+.dtab:active{transform:translateY(2px)}
+.dtab img{border-radius:0 !important;clip-path:var(--st4)}
+@media (max-width:700px){.dtab{height:56px;padding-bottom:12px}}
+
+/* top nav on direction pages */
+body.dirmode #dnav{mix-blend-mode:normal}
+#dnav a{border:0 !important;border-radius:0 !important;clip-path:var(--st4)}
+#dnav a:hover{background:rgba(241,238,232,.1)}
+#dnav a.on{background:var(--cream);color:var(--bg);opacity:1}
+
+/* HELLO capsule: pixel pill */
+.capsule{border-radius:0;box-shadow:none;background:#141318;
+  clip-path:polygon(0 .16em,.08em .16em,.08em .08em,.16em .08em,.16em 0,calc(100% - .16em) 0,calc(100% - .16em) .08em,calc(100% - .08em) .08em,calc(100% - .08em) .16em,100% .16em,100% calc(100% - .16em),calc(100% - .08em) calc(100% - .16em),calc(100% - .08em) calc(100% - .08em),calc(100% - .16em) calc(100% - .08em),calc(100% - .16em) 100%,.16em 100%,.16em calc(100% - .08em),.08em calc(100% - .08em),.08em calc(100% - .16em),0 calc(100% - .16em))}
+
+/* cases: one accent colour per case, used only in small pixel marks and numbers */
+.inner .label::before,.chn::before{content:'';display:inline-block;width:8px;height:8px;background:var(--ca,var(--acc));margin-right:8px;vertical-align:1px}
+.chn{opacity:1;color:rgba(241,238,232,.6)}
+.cardc .mono{opacity:1;color:var(--ca,var(--acc))}
+.cardc h3::before{content:'';display:inline-block;width:8px;height:8px;background:var(--ca,var(--acc));margin-right:12px;vertical-align:3px}
+.sys b{color:var(--ca,var(--cream))}
+.toc a:hover{background:var(--ca,var(--cream)) !important;color:var(--cak,var(--bg)) !important;opacity:1}
+.keys{counter-reset:k}
+.keys li{padding-left:72px !important}
+.keys li::before{content:counter(k) !important;position:absolute;left:24px;top:24px;width:32px;height:32px;display:grid;place-items:center;
+  background:var(--ca,var(--acc));color:var(--cak,var(--bg));font-family:'Pixelify Sans',var(--mono);font-size:18px;font-weight:600;opacity:1;clip-path:var(--st4)}
+.cardc .mono{color:inherit;opacity:.55}
+.cardc > .mono{color:var(--ca,var(--acc));opacity:1}
+.keys li{counter-increment:none}
+.keys li::before{content:counter(list-item) !important}
+
+/* horoscope: just the phones, no panel behind them */
+.phones{background:none !important;padding:16px 8px 48px !important;border-radius:0}
+.phones .pscroll,.bview{overscroll-behavior:auto}
+.pin{position:relative}
+.pin img{width:100%;display:block}
+.hs{position:absolute;background:transparent;border:0;padding:0;border-radius:12px;transition:box-shadow .2s,background .2s}
+.hs:hover{box-shadow:0 0 0 2px rgba(196,180,255,.9);background:rgba(196,180,255,.08)}
+.hs:focus-visible{outline:2px dashed var(--cream);outline-offset:2px}
+/* MOKO: one continuous scroll like a Behance case */
+.gal.flow{display:block;clip-path:var(--st8)}
+.gal.flow img{border-radius:0 !important;clip-path:none !important;display:block;width:100%}
+.phones .pin{width:100% !important;aspect-ratio:auto !important;border-radius:0 !important;box-shadow:none !important;overflow:visible !important}
+.phones .pscroll{box-shadow:0 0 0 8px #0E0D12,0 16px 24px rgba(0,0,0,.3) !important}
+
+/* no "scroll inside / drag to rotate" hints anywhere */
+.hint,.gltip{display:none !important}
+
+/* mini headings lead, body text follows */
+#caseView .chn,#caseView .inner .label[style]{font-family:var(--sans);text-transform:none;letter-spacing:-.01em;
+  font-size:clamp(20px,1.6vw,28px);line-height:1.2;font-weight:600;color:var(--cream);opacity:1;margin-bottom:24px}
+#caseView .chn::before,#caseView .inner .label[style]::before{width:12px;height:12px;margin-right:12px;vertical-align:2px}
+#caseView .big{font-size:clamp(18px,1.4vw,24px);line-height:1.5;letter-spacing:-.01em;opacity:.78}
+.cardc > .mono{font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:16px;line-height:24px;font-weight:600}
+.cardc h3{font-weight:600}
+.cardc p{opacity:.72}
+.facts dt{font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;opacity:1;color:var(--cream)}
+.facts dd{opacity:.72}
+.sys span{opacity:.72}
+.keys li{opacity:.9}
+
+/* never show the system arrow: Safari sometimes brings it back while scrolling with plain cursor:none,
+   a transparent 1px image cursor holds; scrollbars are hidden because they always force the arrow */
+@media (hover:hover){
+  html,body,*,*::before,*::after{cursor:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4XmNgYGBgAAAABQABGWkDzwAAAABJRU5ErkJggg==") 0 0,none !important}
+  html,body,#caseView,.bview,.pscroll,.phones,.gal{scrollbar-width:none}
+  html::-webkit-scrollbar,body::-webkit-scrollbar,#caseView::-webkit-scrollbar,.bview::-webkit-scrollbar,.pscroll::-webkit-scrollbar,.phones::-webkit-scrollbar{display:none;width:0;height:0}
+}
 </style>
 </head>
 <body>
@@ -596,9 +746,9 @@ body:not(.dirmode) #dnav{display:none}
     <div class="c wrap">
       <h2 class="disp big"><span class="inl" id="conH" data-i18n="con.h">Давай поработаем</span></h2>
       <p class="line" data-i18n="con.line">Есть задача или вакансия? Пиши, отвечу в течение дня.</p>
-      <div class="btns">
-        <button class="pill solid" id="copyMail">tirexavia@yandex.ru <span aria-hidden="true">⧉</span></button>
-        <a class="pill ghost" href="https://t.me/tirexavia" target="_blank" rel="noopener">Telegram @tirexavia ↗</a>
+      <div class="btns keys">
+        <button class="kc mail" id="copyMail" aria-label="Скопировать почту tirexavia@yandex.ru"><span class="kf"><span class="ki"><svg viewBox="0 0 10 10" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 2h8v6H1z" fill="currentColor" opacity=".25"/><path d="M1 2h8v1H1zM1 7h8v1H1zM1 3h1v4H1zM8 3h1v4H8zM2 3h1v1H2zM3 4h1v1H3zM4 5h2v1H4zM6 4h1v1H6zM7 3h1v1H7z" fill="currentColor"/></svg></span><span class="kt"><b>tirexavia@yandex.ru</b></span></span></button>
+        <a class="kc tg" aria-label="Telegram @tirexavia" href="https://t.me/tirexavia" target="_blank" rel="noopener"><span class="kf"><span class="ki"><svg viewBox="0 0 10 10" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 1h1v1H8zM6 2h3v1H6zM4 3h4v1H4zM1 4h7v1H1zM3 5h3v1H3zM4 6h2v1H4zM4 7h1v1H4z" fill="currentColor"/><path d="M6 4h1v1H6zM5 5h1v1H5z" fill="currentColor" opacity=".35"/></svg></span><span class="kt"><b>@tirexavia</b></span><span class="ka" aria-hidden="true">↗</span></span></a>
       </div>
       <div class="mono label" data-i18n="con.name">Дарья · tirexavia · Санкт-Петербург</div>
     </div>
@@ -694,7 +844,11 @@ const CASES = [
    res:'Гороскоп стал лёгким поводом зайти в личный кабинет: свой знак и прогноз на сегодня открываются в пару касаний.',
    met:[['1', 'обязательное поле на входе'], ['3', 'вкладки о знаке'], ['12', 'знаков в одном стиле']],
    keys:['Определяю знак автоматически по дате рождения, пользователю не нужно знать даты знаков.', 'Собрала всё о знаке в три вкладки: о себе, прогноз и совместимость.', 'Показала совместимость одним процентом и тремя шкалами: любовь, дружба, работа.', 'Нарисовала 12 знаков в одной манере, чтобы раздел выглядел цельно.']}},
- {id:'moko', d:'graphic', y:'', t:'MOKO', spec:'Графика', cover:W + 'moko/m3.webp', kind:'gallery',
+ {id:'moko', d:'graphic', y:'', t:'MOKO', spec:'Графика · айдентика', sub:'Айдентика кофейни с собственной обжаркой.', cover:W + 'moko/m3.webp', kind:'gallery', flow:true,
+  facts:[['Проект', 'Айдентика кофейни MOKO'], ['Роль', 'Графический дизайн, иллюстрация'], ['Носители', 'Стаканы, упаковка, шопперы, вывеска']],
+  story:{task:'Нужно было придумать бренд для кофейни на каждый день. Чтобы он был дружелюбным, запоминался с одного взгляда и одинаково хорошо работал и на маленьком стакане, и на вывеске над входом.',
+   idea:'Кофе здесь не про церемонию, а про маленькую радость в обычном дне. Отсюда мягкие округлые буквы, живые пятна вместо строгой графики и героиня, которая просто наслаждается своей чашкой.',
+   did:[['Логотип', 'Сделала жирный округлый логотип и отдельный знак M. Он читается даже издалека, поэтому именно он висит на вывеске.'], ['Формы и цвет', 'Собрала систему из пятен и насыщенного синего с кремовым. Из этих деталей можно собрать любой новый носитель, не придумывая его с нуля.'], ['Упаковка', 'Дала каждой обжарке свой цвет и форму: Sweet Balance светлая, Bright Blend синяя, Dark Mood тёмная. Вкус можно выбрать по пачке, не вчитываясь в мелкий текст.'], ['Иллюстрация', 'Нарисовала героиню с чашкой. Она появляется на стакане, шоппере и витрине и делает бренд теплее и человечнее.']]},
   media:[1, 2, 3, 4, 5, 6].map(i => ({img:W + `moko/m${i}.webp`}))},
  {id:'iso', d:'3d', y:'', t:'Isometric Composition', spec:'3D', cover:W + '3d/iso.webp', kind:'gallery',
   media:[{img:W + '3d/iso.webp'}]},
@@ -704,6 +858,11 @@ const CASES = [
 ];
 /* English version of the case texts */
 const EN = {
+ moko:{spec:'Graphic · identity', sub:'Identity for a coffee shop with its own roastery.',
+  facts:[['Project', 'MOKO coffee shop identity'], ['Role', 'Graphic design, illustration'], ['Applications', 'Cups, packaging, tote bags, signage']],
+  story:{task:'The brief was a brand for an everyday coffee shop: friendly, memorable at a glance, and just as strong on a small cup as on the sign above the door.',
+   idea:'Coffee here is not a ritual, it is a small joy in an ordinary day. Hence soft rounded letters, playful blobs instead of strict graphics, and a heroine simply enjoying her cup.',
+   did:[['Logo', 'A bold rounded wordmark plus a separate M mark. It reads from far away, so it became the shop sign.'], ['Shapes and colour', 'A system of blobs in deep blue and cream. Any new item can be built from these parts without starting from scratch.'], ['Packaging', 'Each roast got its own colour and shape: Sweet Balance light, Bright Blend blue, Dark Mood dark. You can pick a taste by the bag without reading the small print.'], ['Illustration', 'I drew a heroine with a cup. She appears on the cup, the tote bag and the window and makes the brand warmer and more human.']]}},
  aura:{spec:'Web · landing page', sub:'A landing page for a residential complex.',
   facts:[['Client', 'AURA Residence, a premium residential complex'], ['Role', 'UX/UI design, design system'], ['Tools', 'Figma'], ['Year', '2026']],
   caps:['Key facts', 'Apartments', 'Location', 'Enquiry'],
@@ -777,7 +936,7 @@ const T = {
   skills:[['web','Веб','Лендинги, UI-киты, прототипы'],['graphic','Графика','Айдентика, постеры, иллюстрация, леттеринг'],
           ['3d','3D','Объекты и сцены, свет, материалы'],['anim','Анимация','Моушн для интерфейсов и графики']],
   'con.lab':'контакт', 'con.h':'Давай <span class="capsule"></span> <em data-c="y">поработаем</em>', 'con.line':'Есть задача или вакансия? Пиши, отвечу в течение дня.',
-  'con.name':'Дарья · tirexavia · Санкт-Петербург', 'foot.top':'наверх ↑', toast:'Почта скопирована',
+  'con.name':'Дарья · tirexavia · Санкт-Петербург', 'con.mk':'почта · нажми, чтобы скопировать', 'con.tk':'telegram · открыть чат', 'con.ok':'скопировано ✓', 'foot.top':'наверх ↑', toast:'Почта скопирована',
   view:'Смотреть кейс', viewp:'Смотреть проект', toc:'Главы', lab:{p:'Продукт', a:'Для кого', pr:'Проблема', fonts:'Шрифты', col:'Цвет', grid:'Сетка', keys:'Самые важные решения'}, CH:['Задача','Анализ','Концепция','Решение','Итог'], soon:'обложка появится позже', title:n => `Название кейса ${n}`,
   back:'← Назад к работам', next:'Следующий кейс →', role:'дизайн',
   sec:{task:'задача', process:'процесс', solution:'решение', result:'итог'},
@@ -800,7 +959,7 @@ const T = {
   skills:[['web','Web','Landing pages, UI kits, prototypes'],['graphic','Graphics','Identity, posters, illustration, lettering'],
           ['3d','3D','Objects and scenes, light, materials'],['anim','Motion','Motion for interfaces and graphics']],
   'con.lab':'contact', 'con.h':'Let’s <span class="capsule"></span> <em data-c="y">work together</em>', 'con.line':'Got a project or a role? Write me, I reply within a day.',
-  'con.name':'Daria · tirexavia · Saint Petersburg', 'foot.top':'back to top ↑', toast:'Email copied',
+  'con.name':'Daria · tirexavia · Saint Petersburg', 'con.mk':'email · click to copy', 'con.tk':'telegram · open chat', 'con.ok':'copied ✓', 'foot.top':'back to top ↑', toast:'Email copied',
   view:'View case', viewp:'View project', toc:'Chapters', lab:{p:'Product', a:'Audience', pr:'Problem', fonts:'Typefaces', col:'Colour', grid:'Grid', keys:'Key decisions'}, CH:['Task','Research','Concept','Solution','Result'], soon:'cover coming soon', title:n => `Case title ${n}`,
   back:'← Back to work', next:'Next case →', role:'design',
   sec:{task:'task', process:'process', solution:'solution', result:'result'},
@@ -993,7 +1152,8 @@ $('#copyMail').addEventListener('click', async () => {
     const ta = document.createElement('textarea'); ta.value = 'tirexavia@yandex.ru'; document.body.appendChild(ta); ta.select();
     try { document.execCommand('copy'); } catch (_) {} ta.remove();
   }
-  const tt = $('#toast'); tt.classList.add('on'); clearTimeout(tt._t); tt._t = setTimeout(() => tt.classList.remove('on'), 2200);
+  const btn = $('#copyMail'), sm = $('b', btn); if (!btn.classList.contains('ok')) btn.style.width = btn.offsetWidth + 'px'; btn.classList.add('ok'); sm.textContent = T[lang]['con.ok'];
+  clearTimeout(btn._t); btn._t = setTimeout(() => { btn.classList.remove('ok'); sm.textContent = 'tirexavia@yandex.ru'; btn.style.width = ''; }, 1800);
 });
 function revealOnScroll() {
   if (RM) return;
@@ -1063,6 +1223,8 @@ function initMascot() {
 /* ---------------- case pages (hash routing + page flip) ---------------- */
 const CV = $('#caseView');
 let caseOpen = null, savedY = 0;
+const HORO = {1:[844,[[16,717,358,50,2]]],2:[844,[[0,52,120,40,1],[16,477,358,90,3],[16,759,358,50,3]]],3:[1449,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6]]],4:[1329,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6]]],5:[1475,[[0,52,150,40,3],[200,1013,174,188,3]]],6:[1802,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6],[16,1716,358,51,7]]],7:[1239,[[0,52,200,40,6],[16,1128,358,52,6]]]};
+const horoScreen = n => { const [H, hs] = HORO[n]; return `<div class="pin"><img src="w/horo/s${n}.webp" alt="" draggable="false">${hs.map(([x, y, w, h, to]) => `<button class="hs" data-to="${to}" style="left:${x / 3.9}%;top:${y / H * 100}%;width:${w / 3.9}%;height:${h / H * 100}%" aria-label="screen ${to}"></button>`).join('')}</div>`; };
 function renderCase(c) {
   caseOpen = c; if (c.kind === 'dir') { renderDir(c); return; } c = W8(c);
   $('#dnav')._mark && $('#dnav')._mark();
@@ -1076,7 +1238,7 @@ function renderCase(c) {
     const s = c.cs, sec = (n, b) => `<section class="ch" id="ch${n}"><div class="mono chn">${L.CH[n]}</div><div class="chb">${b}</div></section>`;
     const hint = lang === 'en' ? 'scroll inside to see the whole design' : 'листай внутри, чтобы посмотреть весь дизайн';
     const cover = c.id === 'horo'
-      ? `<div class="phones">${[1, 2, 3, 4, 5, 6, 7].map(n => `<div class="pscroll" data-lenis-prevent><img src="w/horo/s${n}.webp" alt="" draggable="false"></div>`).join('')}</div><p class="mono hint">${hint} →</p>`
+      ? `<div class="phones">${[1, 2, 3, 4, 5, 6, 7].map(n => `<div class="pscroll" data-lenis-prevent>${horoScreen(n)}</div>`).join('')}</div><p class="mono hint">${lang === 'en' ? 'a live prototype: scroll the screens and tap the buttons' : 'это живой прототип: листай экраны и нажимай на кнопки'} →</p>`
       : c.id === 'aura' ? `<div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="mono">aura-residence.ru</span></div><div class="bview" data-lenis-prevent><img src="w/aura/full.webp" alt="${c.t}" draggable="false"></div></div><p class="mono hint">${hint} ↓</p>`
       : `<img class="wide" src="${c.cover}" alt="${c.t}">`;
     const shots = c.phoneShots ? `<div class="pshots">${c.phoneShots.map(([p, cap]) => `<figure><div class="pscroll"><img src="${p}" alt="${cap}" loading="lazy"></div><figcaption class="mono">${cap}</figcaption></figure>`).join('')}</div>`
@@ -1094,9 +1256,11 @@ function renderCase(c) {
     ${sec(4, `<p class="big">${s.res}</p><div class="sys" style="--c:${s.met.length}">${s.met.map(m => `<div><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
       <div class="mono label" style="margin-top:56px">${L.lab.keys}</div><ol class="keys">${s.keys.map(k => `<li>${k}</li>`).join('')}</ol>`)}`;
   } else {
-    body = c.id === 'iso' ? `<div class="gl3"><img id="glPoster" src="${c.cover}" alt="" draggable="false"><canvas id="gl3d"></canvas><span class="mono gltip">${lang === 'en' ? 'drag to rotate' : 'тяните, чтобы вращать'}</span></div>` : `<div class="gal">${c.media.map(m => m.video ? `<video src="${m.video}" poster="${m.img}" autoplay muted loop playsinline controls></video>` : `<img src="${m.img}" alt="${c.t}" loading="lazy">`).join('')}</div>`;
+    const L2 = T[lang], st = c.story, chs = lang === 'en' ? ['Task', 'Idea', 'What I did', 'Identity'] : ['Задача', 'Идея', 'Что сделала', 'Айдентика'];
+    body = c.id === 'iso' ? `<div class="gl3"><img id="glPoster" src="${c.cover}" alt="" draggable="false"><canvas id="gl3d"></canvas><span class="mono gltip">${lang === 'en' ? 'drag to rotate' : 'тяните, чтобы вращать'}</span></div>` : `<div class="gal${c.flow ? ' flow' : ''}">${c.media.map(m => m.video ? `<video src="${m.video}" poster="${m.img}" autoplay muted loop playsinline controls></video>` : `<img src="${m.img}" alt="${c.t}" loading="lazy">`).join('')}</div>`;
+    if (st) body = `<section class="ch"><div class="mono chn">${chs[0]}</div><p class="big">${st.task}</p></section><section class="ch"><div class="mono chn">${chs[1]}</div><p class="big">${st.idea}</p></section><section class="ch"><div class="mono chn">${chs[2]}</div><div class="quad">${st.did.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div></section><section class="ch"><div class="mono chn">${chs[3]}</div>${body}</section>`;
   }
-  $('#caseIn').innerHTML = `<div class="inner">${head}${body}
+  $('#caseIn').innerHTML = `<div class="inner" style="--ca:${dir(c.d).c};--cak:${dir(c.d).ink}">${head}${body}
     <footer class="mono" style="padding-inline:0;margin-top:96px"><span>© 2026 tirexavia</span><a href="#work">${L.back}</a></footer>
   </div>`;
   $('#caseDeco .wm').textContent = c.t.toUpperCase(); $('#caseDeco').style.setProperty('--dc', dir(c.d).c);
@@ -1766,6 +1930,15 @@ function renderDir(c) {
   show(0);
   $('#dnav')._mark && $('#dnav')._mark();
 }
+/* horoscope prototype: tap a button to move to its screen */
+CV.addEventListener('click', e => { const b = e.target.closest('.hs'); if (!b) return;
+  const sc = b.closest('.pscroll'); sc.innerHTML = horoScreen(+b.dataset.to); sc.scrollTop = 0;
+  gsap.fromTo(sc.firstChild, {opacity:0, x:24}, {opacity:1, x:0, duration:.35, ease:'power2.out'}); });
+/* scroll chaining: when an inner screen reaches its end, the rest of the wheel moves the page */
+CV.addEventListener('wheel', e => { const s = e.target.closest('.pscroll, .bview'); if (!s || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+  const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1), max = s.scrollHeight - s.clientHeight;
+  const inner = clamp(dy, -s.scrollTop, max - s.scrollTop); e.preventDefault();
+  s.scrollTop += inner; CV.scrollTop += dy - inner; }, {passive:false});
 /* ---------------- boot ---------------- */
 function boot() {
   buildCases(); applyLang(lang);

@@ -47,7 +47,8 @@ ul{list-style:none}
   animation:grain 1s steps(6) infinite}
 @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,3%)}80%{transform:translate(3%,1%)}100%{transform:translate(0,0)}}
 
-#cursor{position:fixed;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--cream);z-index:200;pointer-events:none;mix-blend-mode:difference}
+#cursor{position:fixed;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--cream);z-index:200;pointer-events:none;visibility:hidden}
+#cursor.on{visibility:visible}
 @media (pointer:coarse){#cursor{display:none}}
 
 #bar{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;justify-content:space-between;align-items:center;padding-inline:var(--pad);mix-blend-mode:difference;color:var(--cream)}
@@ -354,7 +355,6 @@ figure figcaption{margin-top:10px;opacity:.55}
 .sys div{display:flex;flex-direction:column;gap:14px}
 .sys b{margin:0}
 .shots{align-items:start}
-.shots img{aspect-ratio:16/10;object-fit:cover;object-position:top}
 .tri,.quad{align-items:stretch}
 .keys li{padding-left:24px}
 .keys li::before{content:none}
@@ -490,7 +490,7 @@ canvas.tbot{pointer-events:auto}
 @media (max-width:900px){.dgrid{grid-template-columns:1fr}}
 
 /* real shots, not cropped */
-.shots img{aspect-ratio:auto !important;object-fit:initial !important;height:auto}
+.shots img{height:auto}
 /* scrollable covers */
 .browser{border-radius:16px;overflow:hidden;border:1px solid var(--line2);background:#141318}
 .bbar{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#1F1D24}
@@ -538,8 +538,6 @@ body:not(.dirmode) #dnav{display:none}
 .shots{grid-template-columns:1fr !important;gap:32px;margin-bottom:32px}
 .shots figure{margin:0}
 .shots figcaption{margin-top:16px}
-/* chapter menu scrolls with the page instead of covering the images */
-.toc{position:relative !important;top:auto !important}
 /* solid band under the fixed logo so scrolled text never runs into it */
 #caseView::before{content:'';position:sticky;top:0;display:block;height:88px;margin-bottom:-88px;background:linear-gradient(var(--bg) 64%,rgba(18,17,20,0));z-index:5;pointer-events:none}
 
@@ -686,13 +684,6 @@ body.dirmode #dnav{mix-blend-mode:normal}
 }
 
 /* DEKA prototype */
-.dkg{display:flex;flex-wrap:wrap;gap:8px}
-.dkg .pill{height:48px;padding:0 24px;font-size:15px}
-.dkg .pill.on{--kf:var(--cream);--kd:#8E8999;--kt:var(--bg)}
-.dkp{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 24px}
-.dkp button{height:32px;padding:0 12px;font-family:var(--mono);font-size:13px;color:var(--cream);opacity:.6;background:rgba(241,238,232,.06);clip-path:var(--st4);transition:opacity .2s,background .2s}
-.dkp button:hover{opacity:1}
-.dkp button.on{opacity:1;background:var(--ca,var(--acc));color:var(--cak,var(--bg))}
 #dkView{height:min(72vh,760px)}
 #dkView .pin{position:relative}
 #dkView .pin img{width:100%;display:block}
@@ -710,6 +701,79 @@ body.dirmode #dnav{mix-blend-mode:normal}
 .dke img{width:100%;display:block;clip-path:var(--st8)}
 @media (max-width:900px){.dkf{grid-template-columns:1fr;gap:24px}.dkf:nth-child(even) img{order:0}#dkView{height:60vh}}
 </style>
+<style>
+/* Project gallery, using the existing gutter, type and pixel-edged controls. */
+#bar .work-nav{position:absolute;left:50%;transform:translateX(-50%);display:grid;place-items:center;min-height:44px}
+#bar .work-nav:hover,#bar .work-nav[aria-current]{text-decoration:none;color:var(--cream);opacity:1}
+#caseView .catalog{padding-top:clamp(90px,9vw,120px)}
+#caseView .catalog h1{margin:0 0 26px}
+.catalog-filters{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 clamp(24px,3vw,40px);padding-bottom:16px;border-bottom:1px solid var(--line2)}
+.catalog-filters a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;background:var(--bg2);clip-path:var(--st4)}
+.catalog-filters a:hover,.catalog-filters [aria-current]{background:var(--cream);color:var(--ink)}
+.catalog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,3.5vw,52px) clamp(16px,2vw,32px)}
+.catalog-card{display:block;min-width:0}
+.catalog-cover{position:relative;display:grid;place-items:center;overflow:hidden;aspect-ratio:16/9;background:var(--bg2);clip-path:var(--st8)}
+.catalog-cover>img{display:block;width:100%;height:100%;object-fit:contain}
+.catalog-cover:is(.deka,.moko)>img{object-fit:cover}
+.catalog-cover.moko>img{object-position:center 58%}
+.catalog-cover.balance>img,.catalog-cover.aura>img{height:100%;width:auto;max-width:100%}
+.catalog-cover.iso>img{width:93%;height:93%}
+.catalog-cover.phones-preview{display:flex;justify-content:center;align-items:center;gap:clamp(8px,1.3vw,20px)}
+.phones-preview img{width:auto;height:84%;aspect-ratio:390/844;object-fit:cover;object-position:top;border:1px solid var(--line2);border-radius:8px}
+.phones-preview img:nth-child(2){height:90%}
+.catalog-play{position:absolute;right:12px;bottom:12px;width:36px;height:36px;display:grid;place-items:center;background:var(--bg);clip-path:var(--st4)}
+.catalog-card h2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:12px 0 4px;font-size:clamp(20px,2.1vw,29px);font-weight:500;letter-spacing:-.02em;line-height:1.2}
+.catalog-card h2 span{font-size:.75em;flex:none}
+.catalog-card p{font-size:15px;line-height:1.5;opacity:.8}
+.catalog-card .catalog-tags{display:block;margin-top:6px;opacity:.7}
+.catalog footer{margin-top:clamp(44px,7vw,96px);padding-inline:0}
+.catalog :is(a, h1):focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+.catalog-filters a:focus-visible{outline-offset:-4px}
+
+#caseView .case-chapters .back{margin-bottom:20px}
+#caseView .toc{position:sticky;top:64px;z-index:6;margin:0 0 30px;flex-wrap:wrap}
+#caseView .toc a{display:grid;place-items:center;min-height:40px;white-space:nowrap}
+#caseView .toc a[aria-current]{background:var(--ca,var(--cream));color:var(--cak,var(--ink));opacity:1}
+#caseView .toc a:focus-visible{outline:2px solid currentColor;outline-offset:-5px}
+.dk-controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px 24px;margin:0 0 20px}
+.dk-picker{display:grid;gap:8px;max-width:100%}
+.dk-picker label{opacity:.8}
+.dk-picker select{font:inherit;min-height:44px;max-width:100%;color:var(--cream);background:var(--bg2);border:1px solid var(--line2);border-radius:0;padding:8px 12px;color-scheme:dark}
+.dk-picker select:focus-visible{outline:2px solid var(--ca);outline-offset:3px}
+.dk-help{font-size:15px;line-height:1.5;opacity:.75;max-width:42ch;margin-bottom:3px}
+@media(max-width:700px){
+  .catalog-grid{grid-template-columns:1fr}
+  .catalog-filters a{padding-inline:10px}
+  #caseView .toc{gap:2px;padding:4px;width:100%;margin-bottom:24px}
+  #caseView .toc a{flex:1 1 auto;padding:5px 5px;min-height:44px;font-size:11px;letter-spacing:.025em}
+}
+#caseView .toc a:not([aria-current]):hover{background:none !important;color:var(--cream) !important;opacity:1;text-decoration:none}
+#caseView :is(.dkf img,.dke img,.gal.flow img,#dkView .pin img){height:auto}
+#caseView .graphic-study .ch{padding:64px 0;border-bottom:1px solid var(--line)}
+#caseView .graphic-study .ch:last-child{border-bottom:0;padding-bottom:0}
+.graphic-study .big{margin-bottom:0;max-width:38ch}
+.graphic-study .study-copy{font-size:clamp(16px,1.35vw,20px);line-height:1.55;max-width:60ch;margin:0 0 24px}
+.graphic-study .study-media + .study-media{margin-top:48px}
+.graphic-study .study-media h3{font-size:clamp(20px,2vw,28px);line-height:1.2;font-weight:700;margin:0 0 12px}
+.graphic-study .study-grid{display:grid;gap:24px;align-items:start}
+.graphic-study .study-lightboxes{grid-template-columns:minmax(0,1489fr) minmax(0,2956fr)}
+.catalog-cover.hotishka{aspect-ratio:2100/1492;background:none;clip-path:none}
+.catalog-cover.hotishka>img{display:block;width:100%;height:auto;object-fit:contain}
+.catalog-motion video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--bg2);clip-path:var(--st8)}
+.graphic-study .study-motion{grid-template-columns:repeat(2,minmax(0,1fr))}
+.graphic-study .study-menu{max-width:744px}
+.graphic-study figure{margin:0;min-width:0}
+.graphic-study figure :is(img,video){display:block;width:100%;height:auto;background:var(--bg2)}
+.graphic-study figure video{aspect-ratio:16/9}
+.graphic-study figcaption{margin-top:12px;font-size:14px;line-height:1.4;opacity:.8}
+.catalog-card.catalog-motion h2{padding-right:0}
+#caseView video:fullscreen{clip-path:none;object-fit:contain}
+@media(max-width:700px){
+  #caseView .graphic-study .ch{padding-block:48px}
+  .graphic-study :is(.study-lightboxes,.study-motion){grid-template-columns:1fr;gap:32px}
+  .graphic-study .study-media + .study-media{margin-top:40px}
+}
+</style>
 </head>
 <body>
 <div id="pre" aria-hidden="true">
@@ -722,9 +786,9 @@ body.dirmode #dnav{mix-blend-mode:normal}
 
 <header id="bar" class="mono">
   <button class="logo" data-go="hero">tirexavia</button>
+  <a class="work-nav" href="#works">Работы</a>
   <span id="lang"><button data-l="ru" class="on">RU</button>/<button data-l="en">EN</button></span>
 </header>
-<nav id="dnav" class="mono" aria-label="Направления"></nav>
 
 <main id="home">
   <section id="hero" class="sec">
@@ -837,7 +901,22 @@ const dir = k => DIRS.find(d => d.k === k);
 /* real works - texts copied verbatim from tirexavia.netlify.app */
 const W = 'w/';
 const CASES = [
- {id:'deka', d:'web', y:2026, t:'ДЕКА', spec:'Веб · интернет-магазин', sub:'Интернет-магазин редких и лимитированных пластинок.', cover:W + 'deka/home.webp', kind:'deka',
+ {id:'hotishka', d:'graphic', t:'Хотишка', spec:'Графика · моушн', kind:'editorial',
+  sub:'Редизайн меню для кафе. Лайтбоксы, печатное меню и анимация для экранов.',
+  cover:W + 'hotishka/lightbox-a2.webp',
+  facts:[['Клиент', 'Кафе «Хотишка»'], ['Роль', 'Графический и моушн-дизайн'], ['Носители', 'Лайтбоксы A1 и A2, печатное и экранное меню']],
+  editorial:{
+   chapters:['Задача', 'Решение', 'Итог'],
+   formats:['Лайтбоксы', 'Печатное меню', 'Экранное меню'],
+   task:'Обновила меню кафе «Хотишка». Нужно было сделать его сочнее и ярче и помочь гостю быстро выбрать блюдо у стойки.',
+   lightboxes:'Для лайтбоксов вывела блюда и цены на первый план. Бургеры, комбо и сеты разделила крупными заголовками. На плакате с пиццей показала, сколько стоит кусочек и сколько — целая пицца.',
+   prints:['Бургеры, комбо и сеты · A1', 'Пицца · A2'],
+   menu:'В печатном меню собрала весь ассортимент по категориям. Названия, состав и цены разнесла по уровням, чтобы можно было быстро пробежать список глазами и сравнить позиции.',
+   motion:'В двух роликах для экранного меню категории сменяют друг друга. Пока блюдо в кадре, его название и цена остаются рядом.',
+   videos:['Бургеры, хот-доги и комбо', 'Пицца, закуски и напитки'],
+   result:'Подготовила два лайтбокса, печатное меню и два ролика. На лайтбоксах видны главные предложения и цены, печатное меню помогает сравнить позиции, а на экранах по очереди показываются категории.'
+  }},
+ {id:'deka', d:'web', y:2026, t:'ДЕКА', spec:'Веб · интернет-магазин', sub:'Интернет-магазин редких и лимитированных пластинок.', cover:W + 'deka/preview.webp', kind:'deka',
   facts:[['Проект', 'Интернет-магазин винила ДЕКА'], ['Роль', 'UX/UI, айдентика, дизайн-система'], ['Инструменты', 'Figma'], ['Объём', '21 экран и дизайн-система']]},
  {id:'aura', d:'web', y:2026, t:'AURA Residence', spec:'Веб · лендинг', cover:W + 'aura/a0.webp', kind:'case',
   sub:'Лендинг жилого комплекса.',
@@ -856,10 +935,10 @@ const CASES = [
    met:[['4', 'главных факта на первом экране'], ['2', 'поля в форме заявки'], ['1', 'главная кнопка на экране']],
    keys:['Вынесла срок сдачи, цену, рассрочку и охрану прямо под первый экран, чтобы покупателю не пришлось искать главное.', 'Показала цену в каждой карточке квартиры: отсеять варианты по бюджету можно без звонка менеджеру.', 'Описала расположение в минутах и метрах вместо общих слов.', 'Сократила форму заявки до двух полей.']}},
  {id:'horo', d:'web', y:'', t:'Гороскоп', spec:'Веб · мобильное приложение', cover:W + 'horo/s1.webp', kind:'case', phones:[W + 'horo/s1.webp', W + 'horo/s3.webp', W + 'horo/s7.webp'],
-  sub:'Гороскоп в личном кабинете жильца.',
-  facts:[['Клиент', 'Личный кабинет жильца'], ['Роль', 'UX/UI-дизайн'], ['Инструменты', 'Figma'], ['Платформа', 'Мобильное приложение']],
+  sub:'Гороскоп в личном кабинете жителя.',
+  facts:[['Клиент', 'Личный кабинет жителя'], ['Роль', 'UX/UI-дизайн'], ['Инструменты', 'Figma'], ['Платформа', 'Мобильное приложение']],
   phoneShots:[[W + 'horo/s3.webp', 'О себе'], [W + 'horo/s4.webp', 'Прогноз'], [W + 'horo/s6.webp', 'Совместимость'], [W + 'horo/s7.webp', 'Результат']],
-  cs:{task:['Раздел «Гороскоп» в личном кабинете жильца: прогноз на день, характеристика знака и совместимость.', 'Жильцы, которые пользуются личным кабинетом с телефона.', 'В личный кабинет заходят только по делу, например оплатить счёт или подать заявку, и сразу закрывают. Нужен лёгкий повод возвращаться чаще.'],
+  cs:{task:['Раздел «Гороскоп» в личном кабинете жителя: прогноз на день, характеристика знака и совместимость.', 'Жители, которые пользуются личным кабинетом с телефона.', 'В личный кабинет заходят только по делу, например оплатить счёт или подать заявку, и сразу закрывают. Нужен лёгкий повод возвращаться чаще.'],
    aud:'Гороскоп читают за пару минут и с телефона. Человек хочет сразу увидеть свой знак и прогноз на сегодня, без анкет.',
    find:[['Быстрый вход', 'Не все помнят даты знаков. Знак проще определить по дате рождения, чем выбирать из списка.'], ['Про меня', 'Прогноз ценен, когда он личный. Свой знак должен быть отмечен везде, где встречается.'], ['Повод вернуться', 'Прогноз меняется каждый день, а совместимость хочется проверить с разными людьми.'], ['Свой раздел', 'Гороскоп живёт внутри кабинета и не должен выглядеть чужим.']],
    idea:'Ночное небо внутри личного кабинета: тёмный фон, лиловое свечение сверху и двенадцать знаков, нарисованных в одной манере.',
@@ -885,6 +964,20 @@ const CASES = [
 ];
 /* English version of the case texts */
 const EN = {
+ hotishka:{t:'Hotishka', spec:'Graphic design · motion',
+  sub:'A café menu redesign across lightboxes, print and animated displays.',
+  facts:[['Client', 'Hotishka Café'], ['Role', 'Graphic and motion design'], ['Formats', 'A1 and A2 lightboxes, print and digital menus']],
+  editorial:{
+   chapters:['Brief', 'Solution', 'Outcome'],
+   formats:['Lightboxes', 'Print menu', 'Digital menus'],
+   task:'I redesigned the menu for Hotishka Café. The brief was to make it bright and appetising while helping guests choose quickly at the counter.',
+   lightboxes:'I put the food and prices front and centre on the lightboxes. Large headings separate burgers, combos and sets. The pizza board shows prices for a slice and a whole pizza at a glance.',
+   prints:['Burgers, combos and sets · A1', 'Pizza · A2'],
+   menu:'I organised the full print menu by category and gave names, ingredients and prices their own levels so guests could scan the list and compare items quickly.',
+   motion:'Two animated menus cycle through the categories. The name and price stay beside the dish while it is on screen.',
+   videos:['Burgers, hot dogs and combos', 'Pizza, sides and drinks'],
+   result:'I delivered two lightboxes, a print menu and two animated menus. The lightboxes highlight featured dishes and prices, the print menu lets guests compare items, and the screens cycle through categories.'
+  }},
  moko:{spec:'Graphic · identity', sub:'Identity for a coffee shop with its own roastery.',
   facts:[['Project', 'MOKO coffee shop identity'], ['Role', 'Graphic design, illustration'], ['Applications', 'Cups, packaging, tote bags, signage']],
   story:{task:'The brief was a brand for an everyday coffee shop: friendly, memorable at a glance, and just as strong on a small cup as on the sign above the door.',
@@ -1020,10 +1113,18 @@ $$('[data-go]').forEach(b => b.addEventListener('click', () => {
 
 let MX = FINE ? innerWidth / 2 : -9999, MY = FINE ? innerHeight / 2 : -9999;
 addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') setTimeout(() => { MX = MY = -9999; }, 600); }, {passive:true});
-addEventListener('pointermove', e => { MX = e.clientX; MY = e.clientY; }, {passive:true});
-if (FINE) {
-  const cur = $('#cursor'); let cx = MX, cy = MY;
-  gsap.ticker.add(() => { cx += (MX - cx) * .25; cy += (MY - cy) * .25; cur.style.transform = `translate(${cx}px,${cy}px)`; });
+const cursor = FINE ? $('#cursor') : null;
+const hideCursor = () => cursor?.classList.remove('on');
+addEventListener('pointermove', event => {
+  MX = event.clientX; MY = event.clientY;
+  if (event.pointerType === 'touch') { hideCursor(); return; }
+  if (!cursor) return;
+  cursor.style.transform = `translate3d(${MX}px,${MY}px,0)`;
+  cursor.classList.add('on');
+}, {passive:true});
+if (cursor) {
+  document.documentElement.addEventListener('pointerleave', hideCursor, {passive:true});
+  addEventListener('blur', hideCursor);
 }
 
 /* ---------------- i18n ---------------- */
@@ -1032,8 +1133,14 @@ function applyLang(l) {
   document.documentElement.lang = l;
   $$('#lang button').forEach(b => b.classList.toggle('on', b.dataset.l === l));
   $$('[data-i18n]').forEach(el => { const v = T[l][el.dataset.i18n]; if (typeof v === 'string') el.innerHTML = v; });
-  $('#dnav')._build && $('#dnav')._build(); fillCapsules(); showPhrase(Math.max(0, phIdx), true); textCases(); buildSkills();
-  if (caseOpen) renderCase(caseOpen.kind === 'dir' ? dirPage(caseOpen.d) : caseOpen);
+  $('#bar .work-nav').textContent = lib('title');
+  fillCapsules(); showPhrase(Math.max(0, phIdx), true); textCases(); buildSkills();
+  if (caseOpen) {
+    const scroll = CV.scrollTop, screen = $('#dk-screen-select', CV)?.value;
+    renderCase(caseOpen, caseOrigin, screen);
+    CV.scrollTop = scroll;
+    markChapter();
+  }
   ScrollTrigger.refresh();
 }
 $$('#lang button').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.l)));
@@ -1250,19 +1357,122 @@ function initMascot() {
 
 /* ---------------- case pages (hash routing + page flip) ---------------- */
 const CV = $('#caseView');
-let caseOpen = null, savedY = 0;
+let caseOpen = null, savedY = 0, caseOrigin = 'works', flipTimeline;
+const galleryScroll = new Map();
+
+// Reserve each chapter image's original aspect ratio while lazy-loading.
+const caseImageSizes = {
+  "w/hotishka/lightbox-a1.webp":[1489, 2100],
+  "w/hotishka/lightbox-a2.webp":[2100, 1492],
+  "w/hotishka/print-menu.webp":[1494, 2100],
+  "w/aura/a0.webp":[1035, 633],
+  "w/aura/a1.webp":[1401, 722],
+  "w/aura/a2.webp":[1401, 896],
+  "w/aura/a3.webp":[1401, 702],
+  "w/aura/a4.webp":[1401, 683],
+  "w/moko/m1.webp":[1600, 873],
+  "w/moko/m2.webp":[1600, 1122],
+  "w/moko/m3.webp":[1600, 1698],
+  "w/moko/m4.webp":[1600, 1406],
+  "w/moko/m5.webp":[1600, 758],
+  "w/moko/m6.webp":[1600, 1183],
+  "w/deka/d_404.webp":[1440, 580],
+  "w/deka/d_cart.webp":[1328, 600],
+  "w/deka/d_drop.webp":[1214, 516],
+  "w/deka/d_empty1.webp":[1440, 400],
+  "w/deka/d_empty2.webp":[1440, 440],
+  "w/deka/d_filters.webp":[1304, 1100],
+  "w/deka/d_genres.webp":[1328, 850],
+  "w/deka/d_player.webp":[620, 180],
+  "w/deka/d_search.webp":[1440, 450],
+  "w/deka/d_track.webp":[992, 244]
+};
+function caseImageSize(src) {
+  const size = caseImageSizes[src];
+  return size ? ` width="${size[0]}" height="${size[1]}"` : '';
+}
+
+const renderChapters = names => `<nav class="toc mono" aria-label="${T[lang].toc}">${names.map((name, index) =>
+  `<a href="#ch${index}" data-n="${index}">${name}</a>`).join('')}</nav>`;
+
+function chapterOffset() {
+  const toc = $('.toc', CV);
+  return toc ? parseFloat(getComputedStyle(toc).top) + toc.offsetHeight + 12 : 0;
+}
+
+function markChapter() {
+  const links = $$('.toc a', CV);
+  if (!links.length) return;
+  let active = null;
+  const line = CV.getBoundingClientRect().top + chapterOffset() + 3;
+  for (const link of links) {
+    if ($('#ch' + link.dataset.n, CV).getBoundingClientRect().top <= line) active = link;
+  }
+  for (const link of links) {
+    if (link === active) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  }
+}
+
+CV.addEventListener('scroll', markChapter, {passive:true});
+CV.addEventListener('click', event => {
+  const link = event.target.closest('.toc a');
+  if (!link) return;
+  event.preventDefault();
+  const chapter = $('#ch' + link.dataset.n, CV);
+  const top = CV.scrollTop + chapter.getBoundingClientRect().top - CV.getBoundingClientRect().top - chapterOffset();
+  CV.scrollTo({top, behavior:RM ? 'instant' : 'smooth'});
+});
 const HORO = {1:[844,[[16,717,358,50,2]]],2:[844,[[0,52,120,40,1],[16,477,358,90,3],[16,759,358,50,3]]],3:[1449,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6]]],4:[1329,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6]]],5:[1475,[[0,52,150,40,3],[200,1013,174,188,3]]],6:[1802,[[0,52,200,40,2],[280,52,110,40,5],[20,106,113,48,3],[133,106,122,48,4],[255,106,115,48,6],[16,1716,358,51,7]]],7:[1239,[[0,52,200,40,6],[16,1128,358,52,6]]]};
 const horoScreen = n => { const [H, hs] = HORO[n]; return `<div class="pin"><img src="w/horo/s${n}.webp" alt="" draggable="false">${hs.map(([x, y, w, h, to]) => `<button class="hs" data-to="${to}" style="left:${x / 3.9}%;top:${y / H * 100}%;width:${w / 3.9}%;height:${h / H * 100}%" aria-label="screen ${to}"></button>`).join('')}</div>`; };
-function renderCase(c) {
-  caseOpen = c; if (c.kind === 'dir') { renderDir(c); return; } c = W8(c);
-  $('#dnav')._mark && $('#dnav')._mark();
+function renderInlineVideo(src, poster, title) {
+  return `<video controls playsinline preload="metadata" width="1920" height="1080" poster="${poster}" aria-label="${title}"><source src="${src}" type="video/mp4"></video>`;
+}
+function editorialClips(c) {
+  return c.editorial.videos.map((title, index) => {
+    const path = W + c.id + '/motion-' + (index + 1);
+    return {title, player:renderInlineVideo(path + '.mp4', path + '.webp', title)};
+  });
+}
+function renderEditorial(c) {
+  const story = c.editorial, base = W + c.id + '/';
+  const section = (i, content) => `<section class="ch" id="ch${i}"><h2 class="mono chn">${story.chapters[i]}</h2><div class="chb">${content}</div></section>`;
+  const format = (i, copy, media) => `<div class="study-media"><h3>${story.formats[i]}</h3><p class="study-copy">${copy}</p>${media}</div>`;
+  const printImage = (file, title) => {
+    const src = base + file + '.webp';
+    return `<img src="${src}"${caseImageSize(src)} alt="${title}" loading="lazy" decoding="async">`;
+  };
+  const lightboxes = ['lightbox-a1', 'lightbox-a2'].map((file, i) => {
+    const title = story.prints[i];
+    return `<figure>${printImage(file, title)}<figcaption>${title}</figcaption></figure>`;
+  }).join('');
+  const clips = editorialClips(c).map(({title, player}) =>
+    `<figure>${player}<figcaption>${title}</figcaption></figure>`).join('');
+  return `<div class="graphic-study">
+    ${section(0, `<p class="big">${story.task}</p>`)}
+    ${section(1,
+      format(0, story.lightboxes, `<div class="study-grid study-lightboxes">${lightboxes}</div>`)
+      + format(1, story.menu, `<figure class="study-menu">${printImage('print-menu', story.formats[1])}</figure>`)
+      + format(2, story.motion, `<div class="study-grid study-motion">${clips}</div>`))}
+    ${section(2, `<p class="big">${story.result}</p>`)}
+  </div>`;
+}
+function renderCase(c, from = 'works', screen = 'home') {
+  caseOpen = c;
+  caseOrigin = from;
+  if (c.kind === 'dir') { renderDir(c); return; }
+  c = W8(c);
   const L = T[lang];
-  const head = `<a class="pill ghost back" href="${lastDir ? '#dir-' + lastDir : '#work'}">${lastDir ? (lang === 'en' ? '← ' + dir(lastDir).name.en : '← ' + dir(lastDir).name.ru) : L.back}</a>
-    <div class="mono label">${c.kind === 'case' || c.kind === 'deka' ? (lang === 'en' ? 'Case · ' : 'Кейс · ') : ''}${c.spec}</div>
+  const storyChapters = lang === 'en' ? ['Task', 'Idea', 'What I did', 'Identity'] : ['Задача', 'Идея', 'Что сделала', 'Айдентика'];
+  const chapters = c.kind === 'deka' ? DKT[lang].ch : c.kind === 'case' ? L.CH : c.editorial?.chapters || (c.story ? storyChapters : []);
+  const backLink = `<a class="pill ghost back" href="#${from}">${L.back}</a>`;
+  const head = `
+    <div class="mono label">${['case', 'deka', 'editorial'].includes(c.kind) ? (lang === 'en' ? 'Case · ' : 'Кейс · ') : ''}${c.spec}</div>
     <h1>${c.t}<canvas class="tbot" data-id="title"></canvas></h1>${c.sub ? `<p class="csub">${c.sub}</p>` : ''}
     ${c.facts ? `<dl class="facts">${c.facts.map(f => `<div><dt class="mono">${f[0]}</dt><dd>${f[1]}</dd></div>`).join('')}</dl>` : ''}`;
   let body = '';
   if (c.kind === 'deka') body = renderDeka();
+  else if (c.kind === 'editorial') body = renderEditorial(c);
   else if (c.kind === 'case') {
     const s = c.cs, sec = (n, b) => `<section class="ch" id="ch${n}"><div class="mono chn">${L.CH[n]}</div><div class="chb">${b}</div></section>`;
     const hint = lang === 'en' ? 'scroll inside to see the whole design' : 'листай внутри, чтобы посмотреть весь дизайн';
@@ -1271,9 +1481,8 @@ function renderCase(c) {
       : c.id === 'aura' ? `<div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="mono">aura-residence.ru</span></div><div class="bview" data-lenis-prevent><img src="w/aura/full.webp" alt="${c.t}" draggable="false"></div></div><p class="mono hint">${hint} ↓</p>`
       : `<img class="wide" src="${c.cover}" alt="${c.t}">`;
     const shots = c.phoneShots ? `<div class="pshots">${c.phoneShots.map(([p, cap]) => `<figure><div class="pscroll"><img src="${p}" alt="${cap}" loading="lazy"></div><figcaption class="mono">${cap}</figcaption></figure>`).join('')}</div>`
-      : `<div class="shots">${c.shots.map(([p, cap]) => `<figure><img src="${p}" alt="${cap}" loading="lazy"><figcaption class="mono">${cap}</figcaption></figure>`).join('')}</div>`;
+      : `<div class="shots">${c.shots.map(([p, cap]) => `<figure><img src="${p}"${caseImageSize(p)} alt="${cap}" loading="lazy"><figcaption class="mono">${cap}</figcaption></figure>`).join('')}</div>`;
     body = `<div class="cover2">${cover}</div>
-    <nav class="toc mono">${L.CH.map((h, n) => `<a href="#ch${n}" data-n="${n}">${h}</a>`).join('')}</nav>
     ${sec(0, `<div class="tri">${[[L.lab.p, s.task[0]], [L.lab.a, s.task[1]], [L.lab.pr, s.task[2]]].map(x => `<div class="cardc"><span class="mono">${x[0]}</span><p>${x[1]}</p></div>`).join('')}</div>`)}
     ${sec(1, `<p class="big">${s.aud}</p><div class="quad">${s.find.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>`)}
     ${sec(2, `<p class="big">${s.idea}</p><div class="tri">
@@ -1285,23 +1494,23 @@ function renderCase(c) {
     ${sec(4, `<p class="big">${s.res}</p><div class="sys" style="--c:${s.met.length}">${s.met.map(m => `<div><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
       <div class="mono label" style="margin-top:56px">${L.lab.keys}</div><ol class="keys">${s.keys.map(k => `<li>${k}</li>`).join('')}</ol>`)}`;
   } else {
-    const L2 = T[lang], st = c.story, chs = lang === 'en' ? ['Task', 'Idea', 'What I did', 'Identity'] : ['Задача', 'Идея', 'Что сделала', 'Айдентика'];
-    body = c.id === 'iso' ? `<div class="gl3"><img id="glPoster" src="${c.cover}" alt="" draggable="false"><canvas id="gl3d"></canvas><span class="mono gltip">${lang === 'en' ? 'drag to rotate' : 'тяните, чтобы вращать'}</span></div>` : `<div class="gal${c.flow ? ' flow' : ''}">${c.media.map(m => m.video ? `<video src="${m.video}" poster="${m.img}" autoplay muted loop playsinline controls></video>` : `<img src="${m.img}" alt="${c.t}" loading="lazy">`).join('')}</div>`;
-    if (st) body = `<section class="ch"><div class="mono chn">${chs[0]}</div><p class="big">${st.task}</p></section><section class="ch"><div class="mono chn">${chs[1]}</div><p class="big">${st.idea}</p></section><section class="ch"><div class="mono chn">${chs[2]}</div><div class="quad">${st.did.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div></section><section class="ch"><div class="mono chn">${chs[3]}</div>${body}</section>`;
+    const st = c.story, chs = storyChapters;
+    body = c.id === 'iso' ? `<div class="gl3"><img id="glPoster" src="${c.cover}" alt="" draggable="false"><canvas id="gl3d"></canvas><span class="mono gltip">${lang === 'en' ? 'drag to rotate' : 'тяните, чтобы вращать'}</span></div>` : `<div class="gal${c.flow ? ' flow' : ''}">${c.media.map(m => m.video ? `<video src="${m.video}" poster="${m.img}" autoplay muted loop playsinline controls></video>` : `<img src="${m.img}"${caseImageSize(m.img)} alt="${c.t}" loading="lazy">`).join('')}</div>`;
+    if (st) body = `<section class="ch" id="ch0"><div class="mono chn">${chs[0]}</div><p class="big">${st.task}</p></section><section class="ch" id="ch1"><div class="mono chn">${chs[1]}</div><p class="big">${st.idea}</p></section><section class="ch" id="ch2"><div class="mono chn">${chs[2]}</div><div class="quad">${st.did.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div></section><section class="ch" id="ch3"><div class="mono chn">${chs[3]}</div>${body}</section>`;
   }
-  $('#caseIn').innerHTML = `<div class="inner" style="--ca:${dir(c.d).c};--cak:${dir(c.d).ink}">${head}${body}
-    <footer class="mono" style="padding-inline:0;margin-top:96px"><span>© 2026 tirexavia</span><a href="#work">${L.back}</a></footer>
+  $('#caseIn').innerHTML = `<div class="inner${chapters.length ? ' case-chapters' : ''}" style="--ca:${dir(c.d).c};--cak:${dir(c.d).ink}">${backLink}${chapters.length ? renderChapters(chapters) : ''}${head}${body}
+    <footer class="mono" style="padding-inline:0;margin-top:96px"><span>© 2026 tirexavia</span><a href="#${from}">${L.back}</a></footer>
   </div>`;
   $('#caseDeco .wm').textContent = c.t.toUpperCase(); $('#caseDeco').style.setProperty('--dc', dir(c.d).c);
   if (c.id === 'iso') show3D();
-  if (c.kind === 'deka') dkGo('home');
-  $$('.toc a', CV).forEach(a => a.onclick = e => { e.preventDefault(); $('#ch' + a.dataset.n, CV).scrollIntoView({behavior:RM ? 'auto' : 'smooth'}); });
+  if (c.kind === 'deka') dkGo(screen);
 }
 function flip(d, label, mid, done) {
   const p = $('#flip .p');
   p.style.setProperty('--c', d.c); p.style.setProperty('--k', d.ink); p.querySelector('.mono').textContent = label;
   if (RM) { mid(); done && done(); return; }
-  gsap.timeline()
+  flipTimeline?.kill();
+  flipTimeline = gsap.timeline()
     .set(p, {transformOrigin:'left center', rotateY:-92})
     .to(p, {rotateY:0, duration:.6, ease:'power3.in'})
     .add(mid)
@@ -1309,27 +1518,80 @@ function flip(d, label, mid, done) {
     .to(p, {rotateY:92, duration:.7, ease:'power3.out', delay:.1})
     .add(() => done && done());
 }
-function openCase(c, instant) {
-  const go = () => { if (!caseOpen) savedY = scrollY; renderCase(c); CV.classList.add('on'); CV.scrollTop = 0; lenis && lenis.stop(); };
-  instant ? go() : flip({c:'#ECEAE5', ink:'#121214'}, W8(c).t, go);
+function openCase(c, instant, from = 'works') {
+  const previous = caseOpen, previousOrigin = caseOrigin;
+  if (previous?.kind === 'dir' && c.kind !== 'dir') {
+    galleryScroll.set(previous.id, CV.scrollTop);
+  }
+  const returning = c.kind === 'dir' && previous && previous.kind !== 'dir' && previousOrigin === c.id;
+  const go = () => {
+    if (!caseOpen) savedY = scrollY;
+    CV.classList.add('on');
+    CV.inert = false;
+    $('#home').inert = true;
+    $('#bar .work-nav').setAttribute('aria-current', 'page');
+    renderCase(c, from);
+    CV.scrollTop = returning ? galleryScroll.get(c.id) || 0 : 0;
+    if (!instant || previous) {
+      const focus = returning ? document.getElementById('catalog-' + previous.id)
+        : c.kind === 'dir' && previous?.kind === 'dir' ? $('.catalog-filters [aria-current]', CV) : $('h1', CV);
+      if (focus?.matches('h1')) focus.tabIndex = -1;
+      focus?.focus({preventScroll:true});
+    }
+    lenis?.stop();
+    markChapter();
+  };
+  if (instant || c.kind === 'dir' && previous?.kind === 'dir') {
+    flipTimeline?.kill();
+    gsap.set('#flip .p', {rotateY:-92, transformOrigin:'left center'});
+    go();
+  } else flip({c:'#ECEAE5', ink:'#121214'}, W8(c).t, go);
 }
+
 function closeCase(after) {
   flip({c:'#8065FB', ink:'#F1EEE8'}, 'tirexavia', () => {
-    CV.classList.remove('on'); $('#caseIn').innerHTML = ''; caseOpen = null; lastDir = null; $('#dnav')._mark && $('#dnav')._mark();
-    lenis && lenis.start();
-    if (lenis) lenis.scrollTo(savedY, {immediate:true}); else scrollTo(0, savedY);
+    CV.classList.remove('on');
+    CV.inert = true;
+    $('#home').inert = false;
+    $('#bar .work-nav').removeAttribute('aria-current');
+    $('#caseIn').replaceChildren();
+    $('#caseDeco .wm').textContent = '';
+    caseOpen = null;
+    caseOrigin = 'works';
+    lenis?.start();
+    if (lenis) lenis.scrollTo(savedY, {immediate:true});
+    else scrollTo(0, savedY);
     ScrollTrigger.refresh();
-  }, after || (() => {}));
+  }, after);
 }
-function route() {
-  const h = location.hash.slice(1), c = CASES.find(x => x.id === h);
-  if (h.startsWith('dir-') && dir(h.slice(4))) openCase(dirPage(h.slice(4)));
-  else if (c) openCase(c);
-  else if (caseOpen) closeCase();
-  else if (h && document.getElementById(h)) scrollToY('#' + h);
-}
-addEventListener('hashchange', route);
 
+function route(instant = false) {
+  const [hash, query] = location.hash.slice(1).split('?');
+  const filter = hash === 'works' ? 'all' : hash?.startsWith('dir-') ? hash.slice(4) : null;
+  if (catalogFilters.includes(filter)) {
+    openCase(dirPage(filter), instant);
+    return;
+  }
+  const project = CASES.find(item => item.id === hash);
+  if (project) {
+    const requested = new URLSearchParams(query).get('from');
+    const from = catalogFilters.some(key => catalogHash(key) === requested) ? requested : 'works';
+    openCase(project, instant, from);
+    return;
+  }
+  const target = ['hero', 'manifest', 'work', 'about', 'contact'].includes(hash) ? '#' + hash : null;
+  const scroll = target ? () => scrollToY(target, {immediate:instant}) : undefined;
+  if (caseOpen) closeCase(scroll);
+  else {
+    // A second navigation can arrive before the first flip has rendered its case.
+    if (flipTimeline?.isActive()) {
+      flipTimeline.kill();
+      gsap.set('#flip .p', {rotateY:-92, transformOrigin:'left center'});
+    }
+    scroll?.();
+  }
+}
+addEventListener('hashchange', () => route());
 
 /* ---------------- MotionSites ideas: image capsules + ink reveal ---------------- */
 const KINDS = ['web', 'graphic', '3d', 'anim'];
@@ -1928,38 +2190,75 @@ function initCaseDeco() {
   });
 }
 
-/* top navigation: plain text links that open a page per direction */
-const NAVN = {web:{ru:'Веб', en:'Web'}, graphic:{ru:'Графика', en:'Graphic'}, '3d':{ru:'3D', en:'3D'}, anim:{ru:'Анимация', en:'Motion'}};
-let lastDir = null;
-function initDirNav() {
-  const nav = $('#dnav');
-  const build = () => { nav.innerHTML = DIRS.map(d => `<a href="#dir-${d.k}" data-k="${d.k}">${NAVN[d.k][lang]}</a>`).join(''); mark(); };
-  const mark = () => (document.body.classList.toggle('dirmode', !!caseOpen && caseOpen.kind === 'dir'), $$('a', nav)).forEach(x => x.classList.toggle('on', !!caseOpen && caseOpen.kind === 'dir' && caseOpen.d === x.dataset.k));
-  build(); nav._build = build; nav._mark = mark;
+/* One gallery, with shareable filters and links to the original cases. */
+const catalogText = {
+  ru:{title:'Работы', all:'Все', web:'Веб / UI', graphic:'Графика', '3d':'3D', anim:'Моушн',
+    home:'На главную', filters:'Фильтры работ', identity:'Айдентика'},
+  en:{title:'Work', all:'All', web:'Web / UI', graphic:'Graphic', '3d':'3D', anim:'Motion',
+    home:'Home', filters:'Work filters', identity:'Identity'},
+};
+const catalogFilters = ['all', 'web', 'graphic', 'anim', '3d'];
+const catalogHash = key => key === 'all' ? 'works' : 'dir-' + key;
+const lib = key => catalogText[lang][key];
+const catalogOrder = ['deka', 'hotishka', 'moko', 'ribbons', 'aura', 'horo', 'iso', 'balance', 'pulse', 'suprematism', 'music'];
+const catalogMeta = {
+  hotishka:{tags:['graphic','anim'], sub:['Меню, лайтбоксы и моушн для кафе','Menu, lightboxes and motion for a café']},
+  deka:{cover:'deka/preview.webp', tags:['web'], sub:['Интернет-магазин винила','Vinyl record shop']},
+  moko:{cover:'moko/m2.webp', sub:['Айдентика кофейни','Coffee shop identity']},
+  horo:{sub:['Раздел мобильного приложения для жителей','A feature in the residents’ mobile app']},
+  iso:{sub:['Изометрическая 3D-сцена','Isometric 3D scene']},
+  ribbons:{sub:['Абстрактная анимация лент','Abstract ribbon animation']},
+  balance:{sub:['Анимация геометрической композиции','Animated geometric composition']},
+  pulse:{sub:['Анимация интерфейса с графиками','Animated interface with charts']},
+  suprematism:{sub:['Геометрическая анимация','Geometric animation']},
+  music:{sub:['Анимированная визуализация данных','Animated data visualization']},
+};
+function dirPage(k) { return {id:catalogHash(k), d:k, kind:'dir', t:lib('title')}; }
+
+function renderDir(page) {
+  const cards = catalogOrder.map(id => CASES.find(project => project.id === id))
+    .filter(project => page.d === 'all' || (catalogMeta[project.id]?.filters || [project.d]).includes(page.d));
+  const cover = (project, meta, index) => {
+    return project.id === 'horo' ?
+    `<span class="catalog-cover phones-preview" aria-hidden="true">${[1,3,5].map(n =>
+      `<img src="${W}horo/s${n}.webp" alt="" loading="lazy" decoding="async">`).join('')}</span>` :
+    `<span class="catalog-cover ${project.id}"><img src="${meta.cover ? W + meta.cover : project.cover}" alt="" decoding="async"${index > 1 ? ' loading="lazy"' : ''}>${project.video ? '<span class="catalog-play" aria-hidden="true">▶</span>' : ''}</span>`;
+  };
+  const motion = page.d === 'anim';
+  const renderMotionCard = ({title, player, credit = ''}) =>
+    `<article class="catalog-card catalog-motion">${player}<h2>${title}</h2>
+      ${credit ? `<span class="catalog-tags mono">${credit}</span>` : ''}
+    </article>`;
+  const hotishka = motion ? W8(CASES.find(project => project.id === 'hotishka')) : null;
+  const inlineMotion = hotishka ? editorialClips(hotishka).map(clip =>
+    renderMotionCard({...clip, credit:hotishka.t})).join('') : '';
+  const filterLinks = catalogFilters.map(key =>
+    `<a href="#${catalogHash(key)}"${key === page.d ? ' aria-current="page"' : ''}>${lib(key)}</a>`).join('');
+  $('#caseIn').innerHTML = `<main class="inner catalog">
+    <h1>${lib('title')}<canvas class="tbot" data-id="title" aria-hidden="true"></canvas></h1>
+    <nav class="catalog-filters mono" aria-label="${lib('filters')}">${filterLinks}</nav>
+    <div class="catalog-grid">${inlineMotion}${cards.map((project,index) => {
+      const item = W8(project), meta = catalogMeta[item.id] || {};
+      if (motion) {
+        return renderMotionCard({
+          title:item.t,
+          player:renderInlineVideo(item.video, item.cover, item.t),
+        });
+      }
+      const subtitle = meta.sub?.[lang === 'en' ? 1 : 0] || item.sub;
+      const tags = (meta.tags || [item.d]).map(lib).join(' · ');
+      return `<a class="catalog-card" id="catalog-${item.id}" href="#${item.id}?from=${page.id}">
+        ${cover(item,meta,index)}
+        <h2>${item.t}<span aria-hidden="true">→</span></h2>
+        ${subtitle ? `<p>${subtitle.replace(/\.$/, '')}</p>` : ''}
+        <span class="catalog-tags mono">${tags}</span>
+      </a>`;
+    }).join('')}</div>
+    <footer class="mono"><span>© 2026 tirexavia</span><a href="#hero">${lib('home')}</a></footer>
+  </main>`;
+  $('#caseDeco .wm').textContent = '';
 }
-function dirPage(k) { const d = dir(k); return {id:'dir-' + k, d:k, kind:'dir', t:d.name[lang], spec:''}; }
-function renderDir(c) {
-  const k = c.d, d = dir(k), L = T[lang], list = CASES.filter(x => x.d === k);
-  lastDir = k;
-  $('#caseIn').innerHTML = `<div class="inner dirp">
-    <a class="pill ghost back" href="#">${lang === 'en' ? '← Home' : '← На главную'}</a>
-    <h1>${d.name[lang]}<canvas class="tbot" data-id="title"></canvas></h1>
-    <p class="csub">${d.d[lang]}</p>
-    <div class="dtabs">${list.map((w, i) => `<button class="dtab${i ? '' : ' on'}" data-i="${i}"><img src="${w.cover}" alt="" draggable="false"><span>${W8(w).t}</span></button>`).join('')}</div>
-    <a class="dprev" href="#${list[0].id}"></a>
-    <div class="dmeta"><span class="pill ghost dgo"></span></div>
-    <footer class="mono" style="padding-inline:0;margin-top:96px"><span>© 2026 tirexavia</span><a href="#">${lang === 'en' ? 'Home' : 'На главную'}</a></footer></div>`;
-  const pv = $('#caseIn .dprev'), go = $('#caseIn .dgo');
-  const show = i => { const w = list[i];
-    pv.href = '#' + w.id; go.textContent = (w.kind === 'case' || w.kind === 'deka' ? L.view : L.viewp) + ' →';
-    pv.innerHTML = w.phones ? `<div class="dphones">${w.phones.map(x => `<img src="${x}" alt="" draggable="false">`).join('')}</div>` : w.video ? `<video src="${w.video}" poster="${w.cover}" autoplay muted loop playsinline></video>` : `<img src="${w.cover}" alt="${W8(w).t}" draggable="false">`;
-    $$('#caseIn .dtab').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
-    gsap.fromTo(pv.firstChild, {opacity:0, y:16}, {opacity:1, y:0, duration:.5, ease:'power3.out'}); };
-  $$('#caseIn .dtab').forEach(b => b.addEventListener('click', () => show(+b.dataset.i)));
-  go.parentNode.addEventListener('click', () => location.hash = pv.getAttribute('href'));
-  show(0);
-  $('#dnav')._mark && $('#dnav')._mark();
-}
+/* horoscope prototype is controlled within the original case. */
 /* horoscope prototype: tap a button to move to its screen */
 CV.addEventListener('click', e => { const b = e.target.closest('.hs'); if (!b) return;
   const sc = b.closest('.pscroll'); sc.innerHTML = horoScreen(+b.dataset.to); sc.scrollTop = 0;
@@ -1970,46 +2269,57 @@ CV.addEventListener('wheel', e => { const s = e.target.closest('.pscroll, .bview
   const inner = clamp(dy, -s.scrollTop, max - s.scrollTop); e.preventDefault();
   s.scrollTop += inner; CV.scrollTop += dy - inner; }, {passive:false});
 /* ---------------- DEKA: vinyl shop case with a clickable prototype ---------------- */
-const DKH = [[64, 20, 124, 40, 'home'], [476, 20, 70, 40, 'catalog'], [570, 20, 62, 40, 'drops'], [656, 20, 62, 40, 'genres'], [743, 20, 54, 40, 'about'], [822, 20, 80, 40, 'delivery'],
-  [1196, 20, 32, 40, 'search'], [1244, 20, 32, 40, 'fav'], [1292, 20, 32, 40, 'cart'], [1340, 20, 32, 40, 'orders']];
 const DKP = {
-  home:[4778, 1, [[536, 448, 210, 48, 'drops'], [754, 448, 168, 50, 'catalog'], [568, 664, 304, 304, 'product']]],
-  catalog:[2621, 1, [[1053, 922, 299, 299, 'product']]],
-  product:[2758, 1, [[695, 503, 538, 44, 'cart']]],
-  drops:[2803, 1, []], genres:[1701, 1, [[512, 744, 416, 400, 'rock']]], rock:[2465, 1, []],
-  search:[900, 0, [[1326, 56, 32, 30, 'home'], [1226, 148, 150, 24, 'catalog']]], notfound:[1811, 1, []],
-  cart:[2022, 1, [[992, 621, 352, 48, 'checkout']]], cartempty:[1785, 1, [[500, 528, 237, 48, 'catalog'], [745, 528, 195, 50, 'drops']]],
-  checkout:[1156, 0, [[64, 20, 124, 40, 'home'], [447, 26, 90, 28, 'cart'], [992, 637, 352, 48, 'done']]],
-  done:[1287, 1, [[489, 680, 222, 48, 'order'], [720, 680, 231, 50, 'catalog']]],
-  login:[900, 0, [[64, 44, 124, 40, 'home'], [864, 555, 432, 48, 'orders']]],
-  orders:[1443, 1, [[1232, 392, 120, 36, 'order'], [64, 264, 256, 40, 'fav']]],
-  order:[1477, 1, [[392, 136, 100, 22, 'orders'], [64, 216, 256, 40, 'orders'], [64, 264, 256, 40, 'fav']]],
-  fav:[1837, 1, []], about:[3276, 1, [[522, 2601, 220, 46, 'drops']]], delivery:[1926, 1, []],
-  '404':[900, 1, [[555, 663, 181, 48, 'home'], [745, 663, 140, 50, 'catalog']]],
+  home: [4558, [[632, 640, 176, 48, "catalog"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [1192, 808, 184, 48, "drops"], [1246, 968, 130, 48, "catalog"], [64, 1056, 304, 304, "product"], [1263, 2164, 113, 48, "genres"], [64, 20, 124, 40, "home"]]],
+  catalog: [2621, [[64, 24, 123, 32, "home"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [1072, 938, 304, 304, "product"]]],
+  product: [2758, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [744, 538, 576, 48, "cart"]]],
+  drops: [2803, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"]]],
+  genres: [1701, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [512, 744, 416, 400, "rock"]]],
+  rock: [2465, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [400, 1080, 304, 304, "product"]]],
+  search: [900, [[1297, 61, 26, 20, "home"], [1226, 148, 150, 24, "catalog"]]],
+  notfound: [1811, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [1297, 165, 26, 20, "home"], [64, 804, 304, 304, "product"]]],
+  cart: [2022, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1336, 20, 40, 40, "login"], [992, 621, 352, 48, "checkout"]]],
+  cartempty: [1785, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [500, 528, 237, 48, "catalog"], [745, 528, 195, 50, "drops"]]],
+  checkout: [1156, [[64, 24, 123, 32, "home"], [992, 637, 352, 48, "done"], [447, 28, 90, 24, "cart"]]],
+  done: [1287, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [489, 680, 222, 48, "order"], [719, 680, 232, 50, "catalog"]]],
+  login: [900, [[864, 555, 432, 48, "orders"], [968, 753, 142, 20, "register"]]],
+  register: [900, [[996, 827, 42, 20, "login"], [864, 629, 432, 48, "orders"]]],
+  orders: [1443, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [1232, 392, 120, 36, "order"], [64, 216, 256, 40, "orders"], [64, 264, 256, 40, "fav"], [64, 360, 256, 40, "profile"]]],
+  order: [1477, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [416, 136, 76, 20, "orders"], [64, 216, 256, 40, "orders"], [64, 264, 256, 40, "fav"], [64, 360, 256, 40, "profile"]]],
+  profile: [1677, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [64, 216, 256, 40, "orders"], [64, 264, 256, 40, "fav"], [64, 360, 256, 40, "profile"]]],
+  fav: [1837, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [1123, 142, 253, 50, "cart"], [64, 830, 304, 304, "product"]]],
+  about: [3252, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [522, 2573, 221, 48, "drops"]]],
+  delivery: [1926, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"]]],
+  '404': [900, [[64, 24, 123, 32, "home"], [477, 20, 70, 40, "catalog"], [571, 20, 62, 40, "drops"], [657, 20, 63, 40, "genres"], [744, 20, 55, 40, "about"], [823, 20, 80, 40, "delivery"], [1192, 20, 40, 40, "search"], [1240, 20, 40, 40, "fav"], [1288, 20, 40, 40, "cart"], [1336, 20, 40, 40, "login"], [555, 663, 182, 48, "home"], [745, 663, 141, 50, "catalog"]]],
 };
-const DKG = {ru:[['Витрина', [['home', 'Главная'], ['catalog', 'Каталог'], ['product', 'Карточка'], ['drops', 'Дропы'], ['genres', 'Жанры'], ['rock', 'Жанр']]],
+const DKG = {ru:[['Витрина', [['home', 'Главная'], ['catalog', 'Каталог'], ['product', 'Карточка пластинки'], ['drops', 'Дропы'], ['genres', 'Жанры'], ['rock', 'Жанр: рок']]],
   ['Покупка', [['search', 'Поиск'], ['notfound', 'Ничего не найдено'], ['cart', 'Корзина'], ['cartempty', 'Пустая корзина'], ['checkout', 'Оформление'], ['done', 'Заказ принят']]],
-  ['Кабинет', [['login', 'Вход'], ['orders', 'Мои заказы'], ['order', 'Заказ'], ['fav', 'Избранное']]],
+  ['Кабинет', [['login', 'Вход'], ['register', 'Регистрация'], ['orders', 'Мои заказы'], ['order', 'Заказ'], ['profile', 'Профиль'], ['fav', 'Избранное']]],
   ['Инфо', [['about', 'О нас'], ['delivery', 'Доставка'], ['404', '404']]]],
- en:[['Storefront', [['home', 'Home'], ['catalog', 'Catalogue'], ['product', 'Product'], ['drops', 'Drops'], ['genres', 'Genres'], ['rock', 'Genre']]],
+ en:[['Storefront', [['home', 'Home'], ['catalog', 'Catalogue'], ['product', 'Record details'], ['drops', 'Drops'], ['genres', 'Genres'], ['rock', 'Genre: rock']]],
   ['Purchase', [['search', 'Search'], ['notfound', 'No results'], ['cart', 'Cart'], ['cartempty', 'Empty cart'], ['checkout', 'Checkout'], ['done', 'Order placed']]],
-  ['Account', [['login', 'Sign in'], ['orders', 'My orders'], ['order', 'Order'], ['fav', 'Favourites']]],
+  ['Account', [['login', 'Sign in'], ['register', 'Register'], ['orders', 'My orders'], ['order', 'Order'], ['profile', 'Profile'], ['fav', 'Favourites']]],
   ['Info', [['about', 'About'], ['delivery', 'Delivery'], ['404', '404']]]]};
-const dkGroupOf = k => DKG.ru.findIndex(g => g[1].some(p => p[0] === k));
-const dkScreen = k => { const [H, nav, hs] = DKP[k];
-  return `<div class="pin"><img src="w/deka/${k}.webp" alt="" draggable="false">${[...(nav ? DKH : []), ...hs].map(([x, y, w, h, to]) => `<button class="dks" data-to="${to}" style="left:${x / 14.4}%;top:${y / H * 100}%;width:${w / 14.4}%;height:${h / H * 100}%" aria-label="${to}"></button>`).join('')}</div>`; };
+const dkScreenName = k => DKG[lang].flatMap(([, screens]) => screens).find(([id]) => id === k)?.[1] || k;
+const dkScreen = k => { const [H, hs] = DKP[k];
+  return `<div class="pin"><img src="w/deka/${k}.webp" width="1440" height="${H}" alt="${dkScreenName(k)}" draggable="false">${hs.map(([x, y, w, h, to]) => `<button class="dks" data-to="${to}" style="left:${x / 14.4}%;top:${y / H * 100}%;width:${w / 14.4}%;height:${h / H * 100}%" aria-label="${dkScreenName(to)}"></button>`).join('')}</div>`; };
 function dkGo(k) {
-  const v = $('#dkView', CV); if (!v) return; const gi = dkGroupOf(k), G = DKG[lang] || DKG.ru;
-  v.innerHTML = dkScreen(k); v.scrollTop = 0;
-  $$('.dkg button', CV).forEach((b, i) => b.classList.toggle('on', i === gi));
-  $('.dkp', CV).innerHTML = G[gi][1].map(([id, n]) => `<button data-k="${id}" class="${id === k ? 'on' : ''}">${n}</button>`).join('');
+  const view = $('#dkView', CV), select = $('#dk-screen-select', CV);
+  if (!view || !select || !Object.prototype.hasOwnProperty.call(DKP, k)) return;
+  const hotspotFocused = view.contains(document.activeElement);
+  view.innerHTML = dkScreen(k);
+  view.scrollTop = 0;
+  select.value = k;
   $('.dkurl', CV).textContent = 'deka.shop/' + (k === 'home' ? '' : k);
-  gsap.fromTo(v.firstChild, {opacity:0}, {opacity:1, duration:.3});
+  if (hotspotFocused) view.focus({preventScroll:true});
+  if (!RM) gsap.fromTo(view.firstChild, {opacity:0}, {opacity:1, duration:.3});
 }
-CV.addEventListener('click', e => {
-  const s = e.target.closest('.dks'); if (s) { dkGo(s.dataset.to); return; }
-  const g = e.target.closest('.dkg button'); if (g) { dkGo((DKG.ru)[+g.dataset.g][1][0][0]); return; }
-  const p = e.target.closest('.dkp button'); if (p) dkGo(p.dataset.k);
+CV.addEventListener('change', event => {
+  if (event.target.id === 'dk-screen-select') dkGo(event.target.value);
+});
+CV.addEventListener('click', event => {
+  const hotspot = event.target.closest('.dks');
+  if (hotspot) dkGo(hotspot.dataset.to);
 });
 const DKT = {
  ru:{ch:['Задача', 'Анализ', 'Концепция', 'Решение', 'Итог'], ds:'Дизайн-система', keysH:'Самые важные решения', empty:'Пустые состояния',
@@ -2048,29 +2358,35 @@ const DKT = {
   keys:['Let the record play right on the product page.', 'Put year, format and grade into filters and badges, the way collectors are used to.', 'Gave drops their own section with a timer and a reminder.', 'Led every empty screen to a next step.']}};
 function renderDeka() {
   const T2 = DKT[lang] || DKT.ru, G = DKG[lang] || DKG.ru, sec = (n, b) => `<section class="ch" id="ch${n}"><div class="mono chn">${T2.ch[n]}</div><div class="chb">${b}</div></section>`;
-  const proto = `<div class="dkproto"><div class="dkg">${G.map((g, i) => `<button class="pill ghost" data-g="${i}">${g[0]}</button>`).join('')}</div><div class="dkp"></div>
-    <div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="mono dkurl">deka.shop/</span></div><div class="bview" id="dkView" data-lenis-prevent></div></div></div>`;
-  const fig = ([img, h, p]) => `<div class="dkf"><img src="w/deka/${img}.webp" alt="${h}" loading="lazy" draggable="false"><div><h3>${h}</h3><p>${p}</p></div></div>`;
+  const label = lang === 'en' ? 'Prototype screen' : 'Экран прототипа';
+  const help = lang === 'en' ? 'Choose a screen or click the links and buttons inside the mockup.' : 'Выбери экран из списка или нажимай на ссылки и кнопки внутри макета.';
+  const options = G.map(([group, screens]) => `<optgroup label="${group}">${screens.map(([id,name]) =>
+    `<option value="${id}">${name}</option>`).join('')}</optgroup>`).join('');
+  const proto = `<div class="dkproto"><div class="dk-controls">
+      <div class="dk-picker"><label for="dk-screen-select">${label}</label><select id="dk-screen-select" aria-describedby="dk-help">${options}</select></div>
+      <p class="dk-help" id="dk-help">${help}</p>
+    </div><div class="browser"><div class="bbar"><i></i><i></i><i></i><span class="mono dkurl">deka.shop/</span></div>
+    <div class="bview" id="dkView" data-lenis-prevent tabindex="-1" aria-label="${label}"></div></div></div>`;
+  const fig = ([img, h, p]) => `<div class="dkf"><img src="w/deka/${img}.webp"${caseImageSize(W + `deka/${img}.webp`)} alt="${h}" loading="lazy" draggable="false"><div><h3>${h}</h3><p>${p}</p></div></div>`;
   return `<div class="cover2">${proto}</div>
-    <nav class="toc mono">${T2.ch.map((h, n) => `<a href="#ch${n}" data-n="${n}">${h}</a>`).join('')}</nav>
     ${sec(0, `<p class="big">${T2.task}</p><div class="tri">${T2.tri.map(x => `<div class="cardc"><span class="mono">${x[0]}</span><p>${x[1]}</p></div>`).join('')}</div>`)}
     ${sec(1, `<p class="big">${T2.aud}</p><div class="quad">${T2.find.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>`)}
     ${sec(2, `<p class="big">${T2.idea}</p><div class="tri">${T2.dsc.map(x => `<div class="cardc"><h3>${x[0]}</h3><p>${x[1]}</p></div>`).join('')}</div>
       <div class="mono label" style="margin-top:56px">${T2.ds}</div><div class="browser dkds"><div class="bview" data-lenis-prevent><img src="w/deka/ds.webp" alt="${T2.ds}" draggable="false"></div></div>`)}
     ${sec(3, `<div class="dkfs">${T2.feat.map(fig).join('')}</div>
       <div class="mono label" style="margin-top:56px">${T2.empty}</div><p class="big">${T2.emptyT}</p>
-      <div class="tri dke">${['d_empty1', 'd_empty2', 'd_404'].map(i => `<img src="w/deka/${i}.webp" alt="" loading="lazy" draggable="false">`).join('')}</div>`)}
+      <div class="tri dke">${['d_empty1', 'd_empty2', 'd_404'].map(i => `<img src="w/deka/${i}.webp"${caseImageSize(W + `deka/${i}.webp`)} alt="" loading="lazy" draggable="false">`).join('')}</div>`)}
     ${sec(4, `<p class="big">${T2.res}</p><div class="sys" style="--c:3">${T2.met.map(m => `<div><b>${m[0]}</b><span>${m[1]}</span></div>`).join('')}</div>
       <div class="mono label" style="margin-top:56px">${T2.keysH}</div><ol class="keys">${T2.keys.map(k => `<li>${k}</li>`).join('')}</ol>`)}`;
 }
 /* ---------------- boot ---------------- */
 function boot() {
   buildCases(); applyLang(lang);
-  initWarp(); initHalftone(); revealOnScroll(); initCapsules(); initPixBg(); initGlow(); initLED(); initForm(); initCaseBg(); initCaseDeco(); initBot(); initCardBots(); initDirNav(); initDirBg();
+  initWarp(); initHalftone(); revealOnScroll(); initCapsules(); initPixBg(); initGlow(); initLED(); initForm(); initCaseBg(); initCaseDeco(); initBot(); initCardBots();
   const pre = $('#pre'), num = $('.num', pre), o = {v:0};
   const finish = () => {
     pre.remove(); lenis && lenis.start(); heroIn(); ScrollTrigger.refresh();
-    const h0 = location.hash.slice(1), c = CASES.find(x => x.id === h0); if (h0.startsWith('dir-') && dir(h0.slice(4))) openCase(dirPage(h0.slice(4)), true); else if (c) openCase(c, true);
+    route(true);
   };
   if (RM) { finish(); return; }
   gsap.timeline()
